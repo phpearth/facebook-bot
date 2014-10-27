@@ -1,0 +1,4 @@
+facebookbot:
+    email:      email@domain.tld
+    password:   secretpassword
+    debug:      false

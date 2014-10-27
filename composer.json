@@ -1,0 +1,16 @@
+{
+    "name": "wwphp-fb/facebook-bot",
+    "description": "Facebook bot written in PHP",
+    "require": {
+        "symfony/yaml": "~2.5",
+        "monolog/monolog": "~1.11"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Peter Kokot",
+            "email": "peterkokot@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}
