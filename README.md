@@ -1,14 +1,34 @@
 # Facebook Bot
 
+[![Build Status](https://secure.travis-ci.org/wwphp-fb/facebook-bot.png?branch=master)](http://travis-ci.org/wwphp-fb/facebook-bot)
+
 ![Facebook Bot](bot.png)
 
 Facebook bot for handling some Facebook tasks in the group and a fun project to check what can be automated on Facebook
 within Groups specifically.
 
+## Features
+
+* Approving new membership requests
+
 ## Installation
 
-```php
+```bash
+$ git clone git://github.com/wwphp-fb/facebook-bot
+$ cd facebook-bot
+$ composer install
+```
 
+## Usage
+
+For using this bot you can go through the [documentation](docs/index.md) or check simple example below:
+
+```php
+<?php
+
+$curl = new Curl('facebook-email@domain.tld', 'password');
+$bot = new Bot($curl);
+$bot->run();
 ```
 
 ## Boring legal stuff

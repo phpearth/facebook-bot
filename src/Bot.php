@@ -7,9 +7,9 @@
  * file that was distributed with this source code.
  */
 
-namespace FacebookBot;
+namespace Wwphp\FacebookBot;
 
-use FacebookBot\Curl;
+use Wwphp\FacebookBot\Curl;
 
 class Bot
 {

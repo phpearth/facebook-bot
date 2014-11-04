@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FacebookBot;
+namespace Wwphp\FacebookBot;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -27,7 +27,6 @@ class Curl
      */
     private $deviceName = 'Home';
 
-    //private $uagent = 'Mozilla/4.0 (compatible; MSIE 5.0; S60/3.0 NokiaN73-1/2.0(2.0617.0.0.7) Profile/MIDP-2.0 Configuration/CLDC-1.1)';
     private $uagent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7) Gecko/20040803 Firefox/0.9.3';
     private $cookies = '';
     private $logger;
@@ -46,7 +45,7 @@ class Curl
         $this->password = $password;
         $this->debug = $debug;
         $this->logger = new Logger('curl');
-        $this->logger->pushHandler(new StreamHandler(__DIR__.'/../../logs/curl.log', Logger::DEBUG));
+        $this->logger->pushHandler(new StreamHandler(__DIR__.'/../logs/curl.log', Logger::DEBUG));
     }
 
     /**
@@ -97,7 +96,7 @@ class Curl
         preg_match('%Set-Cookie: ([^;]+);%',$a,$b);
         $c = $this->executeUrl("https://login.facebook.com/login.php?login_attempt=1",true,$b[1],"email=$this->email&pass=$this->password");
         preg_match_all('%Set-Cookie: ([^;]+);%',$c,$d);
-        for($i=0;$i<count($d[0]);$i++) {
+        for ($i=0;$i<count($d[0]);$i++) {
             $this->cookies.=$d[1][$i].";";
         }
     }
@@ -111,18 +110,18 @@ class Curl
         $inputs = $this->parseInputs($page);
         $postParams = '';
         $counter = 0;
-        foreach($inputs as $input) {
-            if($input->getAttribute('name') == 'fb_dtsg' || $input->getAttribute('name') == 'charset_test') {
+        foreach ($inputs as $input) {
+            if ($input->getAttribute('name') == 'fb_dtsg' || $input->getAttribute('name') == 'charset_test') {
                 $postParams .= $input->getAttribute('name') . '=' . urlencode($input->getAttribute('value')) . '&';
                 $counter ++;
             }
-            if($counter == 2){
+            if ($counter == 2){
                 break;
             }
         }
         $postParams .= 'confirm=Add';
         $formAction = $this->parseAction($page, 1);
-        if($this->debug) {
+        if ($this->debug) {
             $this->logger->addInfo('Approving member');
             $this->logger->addInfo('formAction: ' . $formAction);
             $this->logger->addInfo('postParams: ' . $postParams);
@@ -159,7 +158,7 @@ class Curl
         $dom->loadHTML($html);
         $formAction = $dom->getElementsByTagName('form')->item($whichNum)->getAttribute('action');
         if (!strpos($formAction, "//")) {
-            $formAction = "https://m.facebook.com$formAction";
+            $formAction = 'https://m.facebook.com'.$formAction;
         }
         return($formAction);
     }

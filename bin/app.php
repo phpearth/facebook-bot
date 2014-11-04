@@ -1,12 +1,10 @@
 #!/usr/bin/env php
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../src/FacebookBot/Bot.php';
-require_once __DIR__ . '/../src/FacebookBot/Curl.php';
+$loader = require_once __DIR__ . '/../vendor/autoload.php';
 
-use FacebookBot\Curl;
-use FacebookBot\Bot;
+use Wwphp\FacebookBot\Curl;
+use Wwphp\FacebookBot\Bot;
 use Symfony\Component\Yaml\Yaml;
 
 // parse parameters.yml file

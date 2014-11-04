@@ -11,15 +11,7 @@
          stopOnFailure="false">
     <testsuites>
         <testsuite name="Facebook Bot Test Suite">
-            <directory>./src/FacebookBot/Tests</directory>
+            <directory suffix=".php">./tests/</directory>
         </testsuite>
     </testsuites>
-    <filter>
-        <whitelist>
-            <directory suffix=".php">src/FacebookBot/</directory>
-            <exclude>
-                <directory>./src/Rst/Tests</directory>
-            </exclude>
-        </whitelist>
-    </filter>
 </phpunit>
