@@ -107,6 +107,9 @@ class Curl
     public function approveMember()
     {
         $page = $this->executeUrl('http://m.facebook.com/groups/2204685680/?view=members', null, $this->cookies, null);
+        if (strpos($page, '<h4 class="bb j">Requests</h4>') === false) {
+            return;
+        }
         $inputs = $this->parseInputs($page);
         $postParams = '';
         $counter = 0;
