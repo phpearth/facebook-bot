@@ -1,3 +1,5 @@
 /vendor/
 parameters.yml
 /phpunit.xml
+/logs/*
+!logs/.gitkeep

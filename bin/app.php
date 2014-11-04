@@ -2,9 +2,11 @@
 <?php
 
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../src/FacebookBot/Bot.php';
 require_once __DIR__ . '/../src/FacebookBot/Curl.php';
 
 use FacebookBot\Curl;
+use FacebookBot\Bot;
 use Symfony\Component\Yaml\Yaml;
 
 // parse parameters.yml file
@@ -17,7 +19,8 @@ try {
 
     $curl = new Curl($email, $password, $debug);
     $curl->login();
-    $curl->logout();
+    $bot = new Bot($curl);
+    $bot->run();
 } catch (\Exception $e) {
     // Some error occurred
     echo $e->getMessage();
