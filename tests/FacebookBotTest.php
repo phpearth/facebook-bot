@@ -7,9 +7,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Wwphp\FacebookBot\Tests;
+namespace PHPWorldWide\FacebookBot\Tests;
 
-use Wwphp\FacebookBot\Curl;
+use PHPWorldWide\FacebookBot\Curl;
 
 class FacebookBotTest extends \PHPUnit_Framework_TestCase
 {

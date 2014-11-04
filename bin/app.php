@@ -3,8 +3,8 @@
 
 $loader = require_once __DIR__ . '/../vendor/autoload.php';
 
-use Wwphp\FacebookBot\Curl;
-use Wwphp\FacebookBot\Bot;
+use PHPWorldWide\FacebookBot\Curl;
+use PHPWorldWide\FacebookBot\Bot;
 use Symfony\Component\Yaml\Yaml;
 
 // parse parameters.yml file

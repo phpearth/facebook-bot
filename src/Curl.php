@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Wwphp\FacebookBot;
+namespace PHPWorldWide\FacebookBot;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
