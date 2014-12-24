@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPWorldWide\FacebookBot;
+namespace PHPWorldWide\FacebookBot\Connection;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -16,10 +16,10 @@ use Monolog\Handler\FirePHPHandler;
 /**
  * Curl
  */
-class Curl
+class Connection
 {
-    public $email;
-    public $password;
+    private $email;
+    private $password;
     private $debug;
 
     /**
@@ -39,11 +39,12 @@ class Curl
      * @param boolean $debug Set debuging on or off
      *
      */
-    public function __construct($email, $password, $debug = false)
+    public function __construct(string $email, string $password, boolean $debug = false)
     {
         $this->email = $email;
         $this->password = $password;
         $this->debug = $debug;
+
         $this->logger = new Logger('curl');
         $this->logger->pushHandler(new StreamHandler(__DIR__.'/../logs/curl.log', Logger::DEBUG));
     }

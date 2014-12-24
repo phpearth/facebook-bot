@@ -9,12 +9,12 @@
 
 namespace PHPWorldWide\FacebookBot;
 
-use PHPWorldWide\FacebookBot\Curl;
+use PHPWorldWide\FacebookBot\Connection\Connection;
 
 class Bot
 {
 
-    private $curl;
+    private $connection;
 
     /**
      * Constructor.
@@ -22,9 +22,9 @@ class Bot
      * @param Curl $curl
      *
      */
-    public function __construct(Curl $curl)
+    public function __construct(Connection $connection)
     {
-        $this->curl = $curl;
+        $this->connection = $connection;
     }
 
     /**
@@ -35,7 +35,7 @@ class Bot
     public function run()
     {
         while (true) {
-            $this->curl->approveMember();
+            $this->connection->approveMember();
         }
     }
 }
