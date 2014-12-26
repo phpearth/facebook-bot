@@ -1,10 +1,15 @@
 <?php
 
-/*
+/**
  * This file is part of the FacebookBot package.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * @author  Peter Kokot 
+ * @author  Dennis Degryse
+ * @since   0.0.1
+ * @version 0.0.2
  */
 
 namespace PHPWorldWide\FacebookBot\Connection;
@@ -14,21 +19,38 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Handler\FirePHPHandler;
 
 /**
- * Curl
+ * Connection to the Facebook network.
  */
-class Connection
+class Connection implements ConnectionState
 {
+    /**
+     * The login e-mail.
+     */
     private $email;
+
+    /**
+     * The login password.
+     */
     private $password;
+
+    /**
+     * The managed group id.
+     */
+    private $group_id;
+
+    /**
+     * Whether to enable debugging.
+     */
     private $debug;
 
     /**
-     * in case you have location checking turned on
+     * The current connection state
      */
-    private $deviceName = 'Home';
+    private $state;
 
-    private $uagent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7) Gecko/20040803 Firefox/0.9.3';
-    private $cookies = '';
+    /**
+     * A logger for debugging perposes
+     */
     private $logger;
 
     /**
@@ -36,13 +58,15 @@ class Connection
      *
      * @param string $email Email to login to Facebook account
      * @param string $password Password to login to Facebook account
+     * @param string $group_id The group to manage
      * @param boolean $debug Set debuging on or off
      *
      */
-    public function __construct(string $email, string $password, boolean $debug = false)
+    public function __construct(string $email, string $password, string $group_id, boolean $debug = false)
     {
         $this->email = $email;
         $this->password = $password;
+        $this->group_id = $group_id;
         $this->debug = $debug;
 
         $this->logger = new Logger('curl');
@@ -50,121 +74,46 @@ class Connection
     }
 
     /**
-     * Opens URL with curl and performs curl session.
+     * Sends a HTTP request and returns the resulting HTTP response. This operation requires the
+     * state to be connected.
      *
-     * @param string $url URL to open
-     * @param string $header Headers for curl
-     * @param string $cookies cookies for curl
-     * @param string $postData Data to send in curl
+     * @param string $url The url of the HTTP request.
+     * @param string $method The method of the HTTP request.
+     * @param array $data The request parameters to send.
      *
-     * @return string|false Result of curl session or false in case of failure.
+     * @return string The response text.
+     * @throws ConnectionException when the request could not be performed.
      */
-    public function executeUrl($url, $header = null, $cookies = null, $postData = null)
+    public function request(string $url, string $method, array $data)
     {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_HEADER, $header);
-        curl_setopt($ch, CURLOPT_NOBODY, $header);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_COOKIE, $cookies);
-        curl_setopt($ch, CURLOPT_USERAGENT, $this->uagent);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-
-        if ($postData) {
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-        }
-        $result = curl_exec($ch);
-
-        if ($result) {
-            return $result;
-        } else {
-            return curl_error($ch);
-        }
-        curl_close($ch);
+        $this->state->request($this, $url, $method, $data);
     }
 
     /**
-     * Login to Facebook.
+     * Connects to Facebook using the stored credentials. Once connected, requests can be sent.
+     *
+     * @param string $email The login email
+     * @param string $password The login password
      */
-    public function login()
+    public function connect()
     {
-        $this->cookies = "";
-        $a = $this->executeUrl("https://login.facebook.com/login.php?login_attempt=1",true,null,"email=$this->email&pass=$this->password");
-        preg_match('%Set-Cookie: ([^;]+);%',$a,$b);
-        $c = $this->executeUrl("https://login.facebook.com/login.php?login_attempt=1",true,$b[1],"email=$this->email&pass=$this->password");
-        preg_match_all('%Set-Cookie: ([^;]+);%',$c,$d);
-        for ($i=0;$i<count($d[0]);$i++) {
-            $this->cookies.=$d[1][$i].";";
-        }
+        $this->state->connect($this, $email, $password);
     }
 
     /**
-     * Approve member.
+     * Disconnects from Facebook. Once disconnected, requests cannot be send until the connection
+     * has been restored.
      */
-    public function approveMember()
+    public function disconnect()
     {
-        $page = $this->executeUrl('http://m.facebook.com/groups/2204685680/?view=members', null, $this->cookies, null);
-        if (strpos($page, '<h4 class="bb j">Requests</h4>') === false) {
-            return;
-        }
-        $inputs = $this->parseInputs($page);
-        $postParams = '';
-        $counter = 0;
-        foreach ($inputs as $input) {
-            if ($input->getAttribute('name') == 'fb_dtsg' || $input->getAttribute('name') == 'charset_test') {
-                $postParams .= $input->getAttribute('name') . '=' . urlencode($input->getAttribute('value')) . '&';
-                $counter ++;
-            }
-            if ($counter == 2){
-                break;
-            }
-        }
-        $postParams .= 'confirm=Add';
-        $formAction = $this->parseAction($page, 1);
-        if ($this->debug) {
-            $this->logger->addInfo('Approving member');
-            $this->logger->addInfo('formAction: ' . $formAction);
-            $this->logger->addInfo('postParams: ' . $postParams);
-        }
-
-        //approve member
-        $approvedPage = $this->executeUrl($formAction, null, $this->cookies, $postParams);
+        $this->state->disconnect($this);
     }
 
     /**
-     * Parses all inputs of given HTML.
-     *
-     * @param string $html HTML string to parse
-     * @return array Array of Form input field names & values.
+     * Sets the state of the connection.
      */
-    public function parseInputs($html)
+    private function setState(ConnectionState $state)
     {
-        $dom = new \DOMDocument;
-        $dom->loadHTML($html);
-        $inputs = $dom->getElementsByTagName('input');
-        return($inputs);
+        $this->state = $state;
     }
-
-    /**
-     * Parses form to get action URL.
-     *
-     * @param string $html HTML string to parse.
-     * @param int $whichNum number of a form in HTML string.
-     *
-     * @return string URL of the form's action
-     */
-    public function parseAction($html, $whichNum = 0) {
-        $dom = new \DOMDocument;
-        $dom->loadHTML($html);
-        $formAction = $dom->getElementsByTagName('form')->item($whichNum)->getAttribute('action');
-        if (!strpos($formAction, "//")) {
-            $formAction = 'https://m.facebook.com'.$formAction;
-        }
-        return($formAction);
-    }
-
 }
