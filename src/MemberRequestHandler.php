@@ -21,7 +21,7 @@ use PHPWorldwide\FacebookBot\Connection\Connection;
  */
 class MemberRequestHandler 
 {
-	const MEMBERLIST_URL = 'http://m.facebook.com/groups/$this->group_id/?view=members';
+	const MEMBERLIST_URL = 'http://m.facebook.com/groups/{group_id}/?view=members';
 
     /**
      * Fetches a list of membership requests and approves each one of them.

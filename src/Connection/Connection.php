@@ -116,4 +116,12 @@ class Connection implements ConnectionState
     {
         $this->state = $state;
     }
+
+    /**
+     * Builds the final url by replacing any connection-related parameters.
+     */
+    private function buildUrl(string $url) 
+    {
+        return str_replace('{group_id}', $this->group_id, $url);
+    }
 }
