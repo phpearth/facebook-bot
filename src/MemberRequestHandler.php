@@ -32,8 +32,7 @@ class MemberRequestHandler
      */
 	public function run(Connection $connection) 
 	{
-        echo $page = $connection->request(self::MEMBERLIST_URL, "GET", [ 'view' => 'members' ]);
-        exit();
+        $page = $connection->request(self::MEMBERLIST_URL, "GET", [ 'view' => 'members' ]);
 
         if (strpos($page, '<h4 class="bb j">Requests</h4>') === false) 
         {
