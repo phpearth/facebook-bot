@@ -17,35 +17,42 @@ namespace PHPWorldWide\FacebookBot;
 use PHPWorldWide\FacebookBot\Connection\Connection;
 use PHPWorldWide\FacebookBot\Connection\ConnectionException;
 
+use PHPWorldWide\FacebookBot\Handler\MemberRequestHandler;
+
 class Bot
 {
+    /**
+     * The connection to (re)use.
+     */
     private $connection;
-    private $memberRequestHandler;
+
+    /**
+     * The handlers to run.
+     */
+    private $handlers;
 
     /**
      * Constructor.
      *
      * @param Connection $connection
-     *
      */
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
-        $this->memberRequestHandler = new MemberRequestHandler();
+        $this->handlers = [ new MemberRequestHandler() ];
     }
 
     /**
-     * Runs the bot.
+     * Runs all handlers in the bot.
      */
     public function run()
     {
         while (true) {
-            try 
-            {
-                $this->memberRequestHandler->run($this->connection);
-            } 
-            catch (ConnectionException $ex)
-            {
+            try {
+                foreach ($this->handlers as $handler) {
+                    $handler->run($this->connection);
+                }
+            } catch (ConnectionException $ex) {
                 $this->connection->connect();
             }
         }

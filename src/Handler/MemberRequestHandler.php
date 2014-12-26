@@ -12,14 +12,14 @@
  * @version 0.0.2
  */
 
-namespace PHPWorldWide\FacebookBot;
+namespace PHPWorldWide\FacebookBot\Handler;
 
 use PHPWorldwide\FacebookBot\Connection\Connection;
 
 /**
  * A member request handler that automatically approves new membership requests.
  */
-class MemberRequestHandler 
+class MemberRequestHandler implements Handler
 {
 	const MEMBERLIST_URL = 'https://m.facebook.com/groups/{group_id}/';
 
