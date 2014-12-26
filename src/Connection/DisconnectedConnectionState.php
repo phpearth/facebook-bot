@@ -12,7 +12,7 @@
  * @version 0.0.2
  */
 
-namespace PHPWorldwide\FacebookBot\Connection;
+namespace PHPWorldWide\FacebookBot\Connection;
 
 /**
  * A disconnected state.
@@ -21,20 +21,20 @@ class DisconnectedConnectionState extends ConnectionStateAbstract
 {
 	const LOGIN_URL = "https://login.facebook.com/login.php?login_attempt=1";
 
-	public function request(string $url, string $method, array $data)
+	public function request(Connection $connection, $url, $method, $data = [])
 	{
         throw new ConnectionException("Unable to perform a request when disconnected.", ConnectionException::ERR_NOTCONNECTED);
 	}
 
-	public function connect(Connection $connection, string $email, string $password)
+	public function connect(Connection $connection, $email, $password)
 	{
 		$data = [ 'email' => $email, 'pass' => $password ];
 
-        $result = parent::doCurlRequest(LOGIN_URL, true, null, $data);
+        $result = parent::doCurlRequest(self::LOGIN_URL, "POST", $data, true);
         preg_match('%Set-Cookie: ([^;]+);%', $result, $cookieData);
         $cookies = $cookieData[1];
 
-        $result = parent::doCurlRequest(LOGIN_URL, true, $cookies, $data);
+        $result = parent::doCurlRequest(self::LOGIN_URL, "POST", $data, true, $cookies);
         preg_match_all('%Set-Cookie: ([^;]+);%', $result, $cookieData);
         $cookies = implode(';', $cookieData[1]);
 

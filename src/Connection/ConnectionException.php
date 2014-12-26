@@ -11,14 +11,14 @@
  * @version 0.0.2
  */
 
-namespace PHPWorldwide\FacebookBot\Connection;
+namespace PHPWorldWide\FacebookBot\Connection;
 
 class ConnectionException extends \Exception
 {
 	const ERR_NOTCONNECTED = 1;
 	const ERR_OTHER = 2
 
-	public function __construct(string $message, int $code)
+	public function __construct($message, $code)
 	{
 		parent::__construct($message, $code);
 	}

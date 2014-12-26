@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPWorldwide\FacebookBot\Connection;
+namespace PHPWorldWide\FacebookBot\Connection;
 
 /**
  * Provides an interface for connection states.
@@ -22,7 +22,7 @@ interface ConnectionState
 	 *
 	 * @return string|boolean The response text or false in case something went wrong.
 	 */
-	public function request(Connection $connection, string $url, string $method, array $data);
+	public function request(Connection $connection, $url, $method, $data);
 
 	/**
 	 * Connects to Facebook using the stored credentials. Once connected, requests can be sent.
@@ -31,7 +31,7 @@ interface ConnectionState
 	 * @param string $email The login email
 	 * @param string $password The login password
 	 */
-	public function connect(Connection $connection, string $email, string $password);
+	public function connect(Connection $connection, $email, $password);
 
     /**
      * Disconnects from Facebook. Once disconnected, requests cannot be send until the connection

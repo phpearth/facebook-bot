@@ -21,7 +21,7 @@ use Monolog\Handler\FirePHPHandler;
 /**
  * Connection to the Facebook network.
  */
-class Connection implements ConnectionState
+class Connection
 {
     /**
      * The login e-mail.
@@ -62,7 +62,7 @@ class Connection implements ConnectionState
      * @param boolean $debug Set debuging on or off
      *
      */
-    public function __construct(string $email, string $password, string $group_id, boolean $debug = false)
+    public function __construct($email, $password, $group_id, $debug = false)
     {
         $this->email = $email;
         $this->password = $password;
@@ -71,6 +71,8 @@ class Connection implements ConnectionState
 
         $this->logger = new Logger('curl');
         $this->logger->pushHandler(new StreamHandler(__DIR__.'/../logs/curl.log', Logger::DEBUG));
+
+        $this->state = new DisconnectedConnectionState();
     }
 
     /**
@@ -84,9 +86,11 @@ class Connection implements ConnectionState
      * @return string The response text.
      * @throws ConnectionException when the request could not be performed.
      */
-    public function request(string $url, string $method, array $data)
+    public function request($url, $method, $data = [])
     {
-        $this->state->request($this, $url, $method, $data);
+        $url = $this->buildUrl($url);
+        
+        return $this->state->request($this, $url, $method, $data);
     }
 
     /**
@@ -97,7 +101,7 @@ class Connection implements ConnectionState
      */
     public function connect()
     {
-        $this->state->connect($this, $email, $password);
+        $this->state->connect($this, $this->email, $this->password);
     }
 
     /**
@@ -112,7 +116,7 @@ class Connection implements ConnectionState
     /**
      * Sets the state of the connection.
      */
-    private function setState(ConnectionState $state)
+    public function setState(ConnectionState $state)
     {
         $this->state = $state;
     }
@@ -120,7 +124,7 @@ class Connection implements ConnectionState
     /**
      * Builds the final url by replacing any connection-related parameters.
      */
-    private function buildUrl(string $url) 
+    private function buildUrl($url) 
     {
         return str_replace('{group_id}', $this->group_id, $url);
     }

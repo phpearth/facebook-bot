@@ -12,7 +12,7 @@
  * @version 0.0.2
  */
 
-namespace PHPWorldwide\FacebookBot\Connection;
+namespace PHPWorldWide\FacebookBot\Connection;
 
 /**
  * A connected state. This state allows requests to be performed and sends a (list of) cookie(s) 
@@ -27,29 +27,28 @@ class ConnectedConnectionState extends ConnectionStateAbstract
      *
      * @param string $cookies The cookies to issue with requests.
      */
-    public __construct(string $cookies)
+    public function __construct($cookies)
     {
-        $this->connection = $connection;
         $this->cookies = $cookies;
     }
 
-    public function doRequest(Connection $connection, string $url, string $method, array $data = [])
+    public function request(Connection $connection, $url, $method, $data = [])
     {
         try 
         {
-            $result = $connection->doCurlRequest($url, $method, $data, true, $this->cookies);
+            $result = parent::doCurlRequest($url, $method, $data, null, $this->cookies);
         }
-        catch (\Exception ex)
+        catch (\Exception $ex)
         {
             $connection->setState(new DisconnectedConnectionState());
 
-            throw new ConnectionException(ex->getMessage(), ConnectionException::ERR_OTHER);
+            throw new ConnectionException($ex->getMessage(), ConnectionException::ERR_OTHER);
         }
 
         return $result;
     }
 
-    public function connect(Connection $connection, string $username, string $password)
+    public function connect(Connection $connection, $username, $password)
     {
         // Already connected: no action required.
     }

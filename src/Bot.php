@@ -42,9 +42,9 @@ class Bot
         while (true) {
             try 
             {
-                $this->memberRequestHandler->run($connection);
+                $this->memberRequestHandler->run($this->connection);
             } 
-            catch (ConnectionException ex)
+            catch (ConnectionException $ex)
             {
                 $this->connection->connect();
             }

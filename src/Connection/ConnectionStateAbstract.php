@@ -12,7 +12,7 @@
  * @version 0.0.2
  */
 
-namespace PHPWorldwide\FacebookBot\Connection;
+namespace PHPWorldWide\FacebookBot\Connection;
 
 /**
  * Provides an abstract class for connection states.
@@ -21,9 +21,9 @@ abstract class ConnectionStateAbstract implements ConnectionState
 {
     const USERAGENT = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7) Gecko/20040803 Firefox/0.9.3';
 
-	public abstract function request(Connection $connection, string $url, string $method, array $data);
+	public abstract function request(Connection $connection, $url, $method, $data);
 
-	public abstract function connect(Connection $connection, string $email, string $password);
+	public abstract function connect(Connection $connection, $email, $password);
 
 	public abstract function disconnect(Connection $connection);
 
@@ -39,7 +39,7 @@ abstract class ConnectionStateAbstract implements ConnectionState
      *
      * @throws Exception in case the cURL request has failed.
      */
-	protected function doCurlRequest(string $url, string $method, array $data = [], string $header = null, string $cookies = null)
+	protected function doCurlRequest($url, $method, $data = [], $header = null, $cookies = null)
     {
         $curl = curl_init();
         
@@ -47,17 +47,26 @@ abstract class ConnectionStateAbstract implements ConnectionState
         curl_setopt($curl, CURLOPT_NOBODY, $header);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($curl, CURLOPT_COOKIE, $cookies);
-        curl_setopt($curl, CURLOPT_USERAGENT, USERAGENT);
+        curl_setopt($curl, CURLOPT_USERAGENT, self::USERAGENT);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
 
-        $dataString = http_build_query($data);
+        if (count($data) > 0) 
+        {
+            $dataString = http_build_query($data);
+        }
+        else
+        {
+            $dataString = "";
+        }
+
+        echo "Requesting $url\n";
 
         if ($method == "POST")
         {
             curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
             curl_setopt($curl, CURLOPT_POST, 1);
             curl_setopt($curl, CURLOPT_POSTFIELDS, $dataString);
         }
@@ -70,7 +79,10 @@ abstract class ConnectionStateAbstract implements ConnectionState
 
         if (!$result) 
         {
-            throw new \Exception("An error has occured during the cURL request: " . curl_error($curl));
+            $errorDetails = curl_error($curl);
+            throw new \Exception("An error has occured during the cURL request: " . $errorDetails);
+
+            echo $errorDetails;
         }
 
         curl_close($curl);

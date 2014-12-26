@@ -12,7 +12,7 @@
  * @version 0.0.2
  */
 
-namespace PHPWorldwide\FacebookBot;
+namespace PHPWorldWide\FacebookBot;
 
 use PHPWorldwide\FacebookBot\Connection\Connection;
 
@@ -21,7 +21,7 @@ use PHPWorldwide\FacebookBot\Connection\Connection;
  */
 class MemberRequestHandler 
 {
-	const MEMBERLIST_URL = 'http://m.facebook.com/groups/{group_id}/?view=members';
+	const MEMBERLIST_URL = 'https://m.facebook.com/groups/{group_id}/';
 
     /**
      * Fetches a list of membership requests and approves each one of them.
@@ -30,9 +30,10 @@ class MemberRequestHandler
      *
      * @throws ConnectionException If something goes wrong with the connection.
      */
-	public void run(Connection $connection) 
+	public function run(Connection $connection) 
 	{
-        $page = $connection->request(MEMBERLIST_URL, "GET");
+        echo $page = $connection->request(self::MEMBERLIST_URL, "GET", [ 'view' => 'members' ]);
+        exit();
 
         if (strpos($page, '<h4 class="bb j">Requests</h4>') === false) 
         {
