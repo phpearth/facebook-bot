@@ -74,6 +74,7 @@ class MemberRequestHandler
      * Parses all inputs of given HTML.
      *
      * @param string $html HTML string to parse
+     *
      * @return array Array of Form input field names & values.
      */
     private function parseInputs($html)

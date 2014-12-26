@@ -52,27 +52,26 @@ abstract class ConnectionStateAbstract implements ConnectionState
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
 
-        if (count($data) > 0) 
-        {
+        if (count($data) > 0) {
             $dataString = http_build_query($data);
-        }
-        else
-        {
+        } else {
             $dataString = "";
         }
 
-        echo "Requesting $url\n";
+        switch ($method) {
+            case 'POST':
+                curl_setopt($curl, CURLOPT_URL, $url);
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
+                curl_setopt($curl, CURLOPT_POST, 1);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $dataString);
+                break;
 
-        if ($method == "POST")
-        {
-            curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
-            curl_setopt($curl, CURLOPT_POST, 1);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $dataString);
-        }
-        elseif ($method == "GET") 
-        {
-            curl_setopt($curl, CURLOPT_URL, "$url?$dataString");
+            case 'GET': 
+                curl_setopt($curl, CURLOPT_URL, "$url?$dataString");
+                break;
+
+            default:
+                throw new \Exception("An error has occured during the cURL request: Method $method is currently not supported");
         }
 
         $result = curl_exec($curl);
@@ -80,9 +79,8 @@ abstract class ConnectionStateAbstract implements ConnectionState
         if (!$result) 
         {
             $errorDetails = curl_error($curl);
-            throw new \Exception("An error has occured during the cURL request: " . $errorDetails);
 
-            echo $errorDetails;
+            throw new \Exception("An error has occured during the cURL request: " . $errorDetails);
         }
 
         curl_close($curl);

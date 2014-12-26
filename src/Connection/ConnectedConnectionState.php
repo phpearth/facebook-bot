@@ -34,12 +34,9 @@ class ConnectedConnectionState extends ConnectionStateAbstract
 
     public function request(Connection $connection, $url, $method, $data = [])
     {
-        try 
-        {
+        try {
             $result = parent::doCurlRequest($url, $method, $data, null, $this->cookies);
-        }
-        catch (\Exception $ex)
-        {
+        } catch (\Exception $ex) {
             $connection->setState(new DisconnectedConnectionState());
 
             throw new ConnectionException($ex->getMessage(), ConnectionException::ERR_OTHER);
