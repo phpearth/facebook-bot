@@ -26,8 +26,8 @@ For using this bot you can go through the [documentation](docs/index.md) or chec
 ```php
 <?php
 
-$curl = new Curl('facebook-email@domain.tld', 'password');
-$bot = new Bot($curl);
+$connection = new Connection('facebook-email@domain.tld', 'password', '314159265');
+$bot = new Bot($connection);
 $bot->run();
 ```
 
