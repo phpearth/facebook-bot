@@ -1,4 +1,5 @@
 facebookbot:
     email:      email@domain.tld
     password:   secretpassword
+    group_id:	314159265
     debug:      false
