@@ -19,7 +19,7 @@ namespace PHPWorldWide\FacebookBot\Connection;
 class ConnectionException extends \Exception
 {
 	const ERR_NOTCONNECTED = 1;
-	const ERR_OTHER = 2
+	const ERR_OTHER = 2;
 
 	/**
 	 * Creates a new instance.
