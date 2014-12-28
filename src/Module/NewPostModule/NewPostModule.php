@@ -31,7 +31,7 @@ class NewPostModule extends ModuleAbstract
     {
         parent::__construct($connectionManager);
 
-        $this->timeCursor = 1419745310;// time();
+        $this->timeCursor = time();
     }
 
     /**
@@ -49,18 +49,21 @@ class NewPostModule extends ModuleAbstract
         $params = [ 
             'fields' => 'created_time,message',
             'since' => $this->timeCursor,
-            'limit' => 150
+            'limit' => 100
         ];
-
-        $this->timeCursor = time();
 
         $response = $connection->request(Connection::REQ_GRAPH, self::FEED_PATH, 'GET', $params);
         $posts = $response->getGraphObjectList();
+        $postsCount = count($posts);
 
         foreach ($posts as $post) {
             if ($this->containsCode($post->getProperty('message'))) {
                 $entities[] = new NewPostEntity($post->getProperty('id'), $post->getProperty('message'));
             }
+        }
+
+        if ($postsCount > 0) {
+            $this->updateTimeCursor($posts[0]->getProperty('updated_time'));
         }
 
         return $entities;
@@ -76,7 +79,14 @@ class NewPostModule extends ModuleAbstract
      */
     protected function handleEntity(Connection $connection, $entity)
     {
-        echo 'Post with id ' . $entity->getId() . " has tested positive for inline code: \n" . $entity->getMessage() . "\n\n";
+        echo 'Post with id ' . $entity->getId() . " has tested positive for inline code: \n";// . $entity->getMessage() . "\n\n";
+    }
+
+    private function updateTimeCursor($postTimeIso) 
+    {
+        $dateTime = new \DateTime($postTimeIso);
+
+        $this->timeCursor = $dateTime->getTimestamp();
     }
 
     /**
