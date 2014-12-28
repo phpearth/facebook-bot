@@ -74,11 +74,18 @@ abstract class ModuleAbstract extends \Thread implements Module
 
         while (!$this->isStopRequested())
         {
-            $entities = $this->pollData($connection);
+            try {
+                $entities = $this->pollData($connection);
 
-            foreach ($entities as $entity) {
-                $this->handleEntity($connection, $entity);
+                foreach ($entities as $entity) {
+                    $this->handleEntity($connection, $entity);
+                }
+            } catch (\Exception $ex) {
+                echo $ex->getMessage();
+                break;
             }
+
+            sleep(1);
         }
 
         $connection->disconnect();

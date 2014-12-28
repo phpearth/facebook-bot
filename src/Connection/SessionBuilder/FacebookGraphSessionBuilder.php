@@ -30,15 +30,21 @@ class FacebookGraphSessionBuilder implements SessionBuilder
      *
      * @param string $accesstoken The access token.
      */
-    public function __construct($accessToken)
+    public function __construct($appId, $appSecret, $accessToken)
     {
+        FacebookSession::setDefaultApplication($appId, $appSecret);
+
         $this->accessToken = $accessToken;
     }
 
     public function build()
     {
-        // FacebookSession::setDefaultApplication('app-id', 'app-secret');
+        if ($this->accessToken != null) {
+            $session = new FacebookSession($this->accessToken);
+        } else {
+            $session = FacebookSession::newAppSession();
+        }
 
-        return new FacebookSession($this->accessToken);
+        return $session;
     }
 }

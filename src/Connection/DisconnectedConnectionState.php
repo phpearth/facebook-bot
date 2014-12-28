@@ -14,8 +14,8 @@
 
 namespace PHPWorldWide\FacebookBot\Connection;
 
-use PHPWorldWide\FacebookBot\Connection\SessionBuider\FacebookSessionBuilder;
-use PHPWorldWide\FacebookBot\Connection\SessionBuider\FacebookGraphSessionBuilder;
+use PHPWorldWide\FacebookBot\Connection\SessionBuilder\FacebookSessionBuilder;
+use PHPWorldWide\FacebookBot\Connection\SessionBuilder\FacebookGraphSessionBuilder;
 
 /**
  * A disconnected state.
@@ -29,12 +29,19 @@ class DisconnectedConnectionState implements ConnectionState
 
 	public function connect(Connection $connection, ConnectionParameters $connectionParameters)
 	{
-		$sessionBuilders = [
-            Connection::SESSION_CURL => new FacebookSessionBuilder($connectionParameters->getEmail(), $connectionParameters->getPassword),
-            Connection::SESSION_GRAPH => new FacebookGraphSessionBuilder($connectionParameters->getAccessToken())
+		$sessions = [
+            Connection::SESSION_CURL => new FacebookSessionBuilder(
+                $connectionParameters->getEmail(), 
+                $connectionParameters->getPassword()
+            ),
+            Connection::SESSION_GRAPH => new FacebookGraphSessionBuilder(
+                $connectionParameters->getAppId(), 
+                $connectionParameters->getAppSecret(), 
+                $connectionParameters->getAccessToken()
+            )
         ];
 
-        $sessions = array_walk(function(&$item) { $item = $item->build() }, $sessionBuilders);
+        array_walk($sessions, function(&$item) { $item = $item->build(); });
 
         $connection->setState(new ConnectedConnectionState($sessions));
 	}

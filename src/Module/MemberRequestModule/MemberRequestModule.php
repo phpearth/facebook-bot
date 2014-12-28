@@ -9,7 +9,7 @@
  * @author  Peter Kokot 
  * @author  Dennis Degryse
  * @since   0.0.2
- * @version 0.0.3
+ * @version 0.0.4
  */
 
 namespace PHPWorldWide\FacebookBot\Module\MemberRequestModule;
@@ -23,7 +23,7 @@ use PHPWorldWide\FacebookBot\Module\ModuleAbstract;
  */
 class MemberRequestModule extends ModuleAbstract
 {
-	const MEMBERLIST_URL = '/groups/{group_id}/';
+	const MEMBERLIST_PATH = '/groups/{group_id}/';
     const REQUESTFORM_CLASS = 'bg'; //'groupConfirmRequestForm';
 
     public $debug = false;
@@ -42,7 +42,7 @@ class MemberRequestModule extends ModuleAbstract
         $entities = [];
         $dom = new \DOMDocument();
 
-        $page = $connection->request(Connection::REQ_LITE, self::MEMBERLIST_URL, 'GET', [ 'view' => 'members' ]);
+        $page = $connection->request(Connection::REQ_LITE, self::MEMBERLIST_PATH, 'GET', [ 'view' => 'members' ]);
         $dom->loadHTML($page);
 
         $forms = $dom->getElementsByTagName('form');

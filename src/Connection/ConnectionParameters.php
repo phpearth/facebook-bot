@@ -29,6 +29,16 @@ class ConnectionParameters
     private $password;
 
     /**
+     * The Facebook App ID.
+     */
+    private $appId;
+
+    /**
+     * The Facebook App Secret key.
+     */
+    private $appSecret;
+
+    /**
      * The Facebook Graph access token.
      */
     private $accessToken;
@@ -43,13 +53,17 @@ class ConnectionParameters
      *
      * @param string $email The login e-mail
      * @param string $password The login password
+     * @param string $appId The Facebook App ID
+     * @param string $appSecret Facebook App Secret key
      * @param string $accessToken The Facebook Graph access token
      * @param string $groupId The group's id
      */
-    public function __construct($email, $password, $accessToken, $groupId)
+    public function __construct($email, $password, $appId, $appSecret, $accessToken, $groupId)
     {
         $this->email = $email;
         $this->password = $password;
+        $this->appId = $appId;
+        $this->appSecret = $appSecret;
         $this->accessToken = $accessToken;
         $this->groupId = $groupId;
     }
@@ -75,13 +89,33 @@ class ConnectionParameters
     }
 
     /**
+     * Gets the Facebook App ID.
+     *
+     * @return string The Facebook App ID.
+     */
+    public function getAppId()
+    {
+        return $this->appId;
+    }
+
+    /**
+     * Gets the Facebook App Secret key.
+     *
+     * @return string The Facebook App Secret key.
+     */
+    public function getAppSecret()
+    {
+        return $this->appSecret;
+    }
+
+    /**
      * Gets the Facebook Graph access token.
      *
      * @return string The access token
      */
     public function getAccessToken()
     {
-        return $this->password;
+        return $this->accessToken;
     }
 
     /**

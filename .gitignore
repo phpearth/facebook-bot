@@ -4,3 +4,4 @@ parameters.yml
 /logs/*
 !logs/.gitkeep
 *.sublime*
+/sandbox/

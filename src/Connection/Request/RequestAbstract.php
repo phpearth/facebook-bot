@@ -42,10 +42,9 @@ abstract class RequestAbstract
      */
     public function __construct($path, $method, $parameters = []) 
     {
-        $this->connection = $connection;
         $this->path = $path;
         $this->method = $method;
-        $this->data = $parameters;
+        $this->parameters = $parameters;
     }
 
     public abstract function execute();

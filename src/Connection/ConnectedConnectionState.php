@@ -73,13 +73,12 @@ class ConnectedConnectionState implements ConnectionState
      *
      * @return Request The request.
      */
-     */
     private function createRequest($type, $path, $method, $data = [])
     {
         $request = null;
 
         switch ($type) {
-            case Connection::REQ_SIMPLE:
+            case Connection::REQ_GRAPH:
                 $session = $this->sessions[Connection::SESSION_GRAPH];
                 $request = new FacebookGraphRequest($path, $method, $session, $data);
                 break;
@@ -90,11 +89,14 @@ class ConnectedConnectionState implements ConnectionState
                 $request = new CURLRequest($baseUrl, $path, $method, $session, $data);
                 break;
 
-            case Connection::REQ_GRAPH:
+            case Connection::REQ_SIMPLE:
                 $baseUrl = 'https://www.facebook.com';
                 $session = $this->sessions[Connection::SESSION_CURL];
                 $request = new CURLRequest($baseUrl, $path, $method, $session, $data);
                 break;
+
+            default:
+                throw new \Exception("Unsupported request type $type.");
         }
 
         return $request;

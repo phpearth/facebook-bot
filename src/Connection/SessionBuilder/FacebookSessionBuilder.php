@@ -49,8 +49,8 @@ class FacebookSessionBuilder implements SessionBuilder
     public function build()
     {
         $data = [ 
-            'email' => $connectionParameters->getEmail(), 
-            'pass' => $connectionParameters->getPassword() ];
+            'email' => $this->email, 
+            'pass' => $this->password ];
 
         $request = new CURLRequest(self::REQ_BASEURL, self::REQ_PATH, 'POST', null, $data, true);
         $result = $request->execute();
