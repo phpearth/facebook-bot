@@ -9,7 +9,7 @@
  * @author  Peter Kokot 
  * @author  Dennis Degryse
  * @since   0.0.1
- * @version 0.0.2
+ * @version 0.0.3
  */
 
 namespace PHPWorldWide\FacebookBot\Connection;
@@ -19,24 +19,16 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Handler\FirePHPHandler;
 
 /**
- * Connection to the Facebook network.
+ * Connection to the Facebook network. A connection is not thread-safe, so don't attempt to use 
+ * them accross threads. Use the thread-manager to create connections in multi-threaded
+ * applications.
  */
 class Connection
 {
     /**
-     * The login e-mail.
+     * The connection parameters.
      */
-    private $email;
-
-    /**
-     * The login password.
-     */
-    private $password;
-
-    /**
-     * The managed group id.
-     */
-    private $group_id;
+    private $connectionParameters;
 
     /**
      * Whether to enable debugging.
@@ -62,11 +54,9 @@ class Connection
      * @param boolean $debug Set debuging on or off
      *
      */
-    public function __construct($email, $password, $group_id, $debug = false)
+    public function __construct(ConnectionParameters $connectionParameters, $debug = false)
     {
-        $this->email = $email;
-        $this->password = $password;
-        $this->group_id = $group_id;
+        $this->connectionParameters = $connectionParameters;
         $this->debug = $debug;
 
         $this->logger = new Logger('curl');
@@ -101,7 +91,7 @@ class Connection
      */
     public function connect()
     {
-        $this->state->connect($this, $this->email, $this->password);
+        $this->state->connect($this, $this->connectionParameters);
     }
 
     /**
@@ -126,6 +116,6 @@ class Connection
      */
     private function buildUrl($url) 
     {
-        return str_replace('{group_id}', $this->group_id, $url);
+        return str_replace('{group_id}', $this->connectionParameters->getGroupId(), $url);
     }
 }

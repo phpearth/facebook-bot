@@ -9,52 +9,55 @@
  * @author  Peter Kokot 
  * @author  Dennis Degryse
  * @since   0.0.1
- * @version 0.0.2
+ * @version 0.0.3
  */
 
 namespace PHPWorldWide\FacebookBot;
 
-use PHPWorldWide\FacebookBot\Connection\Connection;
-use PHPWorldWide\FacebookBot\Connection\ConnectionException;
+use PHPWorldWide\FacebookBot\Connection\ConnectionManager;
+use PHPWorldWide\FacebookBot\Connection\ConnectionParameters;
 
-use PHPWorldWide\FacebookBot\Handler\MemberRequestHandler;
+use PHPWorldWide\FacebookBot\Module\ModuleManager;
 
+/**
+ * The main class for the Facebook bot.
+ */
 class Bot
 {
     /**
-     * The connection to (re)use.
+     * The connection manager.
      */
-    private $connection;
+    private $connectionManager;
 
     /**
-     * The handlers to run.
+     * The module manager.
      */
-    private $handlers;
+    private $moduleManager;
 
     /**
      * Constructor.
      *
-     * @param Connection $connection
+     * @param ConnectionParameters $connectionParameters
      */
-    public function __construct(Connection $connection)
+    public function __construct(ConnectionParameters $connectionParameters)
     {
-        $this->connection = $connection;
-        $this->handlers = [ new MemberRequestHandler() ];
+        $this->connectionManager = new ConnectionManager($connectionParameters);
+        $this->moduleManager = new ModuleManager($this->connectionManager);
     }
 
     /**
-     * Runs all handlers in the bot.
+     * Gets the module manager.
      */
-    public function run()
+    public function getModuleManager()
     {
-        while (true) {
-            try {
-                foreach ($this->handlers as $handler) {
-                    $handler->run($this->connection);
-                }
-            } catch (ConnectionException $ex) {
-                $this->connection->connect();
-            }
-        }
+        return $this->moduleManager;
+    }
+
+    /**
+     * Gets the connection manager.
+     */
+    public function getConnectionManager()
+    {
+        return $this->connectionManager;
     }
 }

@@ -3,3 +3,4 @@ parameters.yml
 /phpunit.xml
 /logs/*
 !logs/.gitkeep
+*.sublime*

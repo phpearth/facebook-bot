@@ -9,7 +9,7 @@
  * @author  Peter Kokot 
  * @author  Dennis Degryse
  * @since   0.0.2
- * @version 0.0.2
+ * @version 0.0.3
  */
 
 namespace PHPWorldWide\FacebookBot\Connection;
@@ -45,7 +45,7 @@ class ConnectedConnectionState extends ConnectionStateAbstract
         return $result;
     }
 
-    public function connect(Connection $connection, $username, $password)
+    public function connect(Connection $connection, ConnectionParameters $connectionParameters)
     {
         // Already connected: no action required.
     }
