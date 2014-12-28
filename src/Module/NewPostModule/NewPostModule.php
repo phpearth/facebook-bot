@@ -40,7 +40,7 @@ class NewPostModule extends ModuleAbstract
     {
         parent::__construct($connectionManager);
 
-        $this->timeCursor = 1419745310; //time();
+        $this->timeCursor = time();
     }
 
     /**
@@ -126,7 +126,8 @@ class NewPostModule extends ModuleAbstract
             'Content-Length' => strlen($data)
         ];
 
-        $request = new CURLRequest('https://api.github.com', '/gists', 'POST', null, $data, false, $headers);
+        $baseUrl = 'https://api.github.com';
+        $request = new CURLRequest($baseUrl, '/gists', 'POST', null, $data, false, $headers);
         $response = json_decode($request->execute());
 
         return $response->html_url;
@@ -151,25 +152,30 @@ class NewPostModule extends ModuleAbstract
         libxml_clear_errors();
 
         $forms = $dom->getElementsByTagName('form');
+        $commentForm = null;
 
         foreach ($forms as $form) {
             if (strtoupper($form->getAttribute('method')) == 'POST') {
-                $commentActionUrl = $form->getAttribute('action');
-                $inputElements = $form->getElementsByTagName('input');
-
-                $commentInputData = [ 'submit' => 'Post' ];
-
-                foreach ($inputElements as $input) {
-                    if ($input->getAttribute('type') != 'submit') {
-                        $commentInputData[$input->getAttribute('name')] = $input->getAttribute('value');
-                    }
-                }
-
-                return new NewPostEntity($postId, $author, $message, $commentActionUrl, $commentInputData);
+                $commentForm = $form;
             }
         }
 
-        return null;
+        if ($commentForm == null) {
+            throw new \Exception("NewPostEntity was not created because the comment form could not be found");
+        }
+
+        $commentActionUrl = $form->getAttribute('action');
+        $inputElements = $form->getElementsByTagName('input');
+
+        $commentInputData = [ 'submit' => 'Post' ];
+
+        foreach ($inputElements as $input) {
+            if ($input->getAttribute('type') != 'submit') {
+                $commentInputData[$input->getAttribute('name')] = $input->getAttribute('value');
+            }
+        }
+
+        return new NewPostEntity($postId, $author, $message, $commentActionUrl, $commentInputData);
     }
 
     /**
