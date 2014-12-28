@@ -23,7 +23,7 @@ use PHPWorldWide\FacebookBot\Module\ModuleAbstract;
  */
 class MemberRequestModule extends ModuleAbstract
 {
-	const MEMBERLIST_URL = 'https://m.facebook.com/groups/{group_id}/';
+	const MEMBERLIST_URL = '/groups/{group_id}/';
     const REQUESTFORM_CLASS = 'bg'; //'groupConfirmRequestForm';
 
     public $debug = false;
@@ -42,7 +42,7 @@ class MemberRequestModule extends ModuleAbstract
         $entities = [];
         $dom = new \DOMDocument();
 
-        $page = $connection->request(self::MEMBERLIST_URL, "GET", [ 'view' => 'members' ]);
+        $page = $connection->request(Connection::REQ_LITE, self::MEMBERLIST_URL, 'GET', [ 'view' => 'members' ]);
         $dom->loadHTML($page);
 
         $forms = $dom->getElementsByTagName('form');
@@ -104,11 +104,11 @@ class MemberRequestModule extends ModuleAbstract
      * @return string The fully qualified action URL
      */
     private function sanitizeActionUrl($url) {
-        if (!strpos($url, "//")) {
-            $url = 'https://m.facebook.com' . $url;
-        }
+        preg_match("%^(https?\://.*\.facebook\.com|)(/.*)$%", $url, $match);
+
+        $path = $match[2];
         
-        return $url;
+        return $path;
     }
 
     /**
@@ -119,7 +119,7 @@ class MemberRequestModule extends ModuleAbstract
      * @return string The fully qualified context-free profile URL.
      */
     private function sanitizeProfileUrl($url) {
-        preg_match("%^(https?\://m\.facebook\.com|)/?([^/]+)\?%", $url, $match);
+        preg_match("%^(https?\://.*\.facebook\.com|)/?([^/]+)\?%", $url, $match);
 
         $facebookId = $match[2];
 
