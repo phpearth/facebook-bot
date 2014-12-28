@@ -66,7 +66,7 @@ class MemberRequestModule extends ModuleAbstract
      */
     protected function handleEntity(Connection $connection, $entity)
     {
-        $connection->request($entity->getActionUrl(), 'POST', $entity->getInputData());
+        $connection->request(Connection::REQ_LITE, $entity->getActionUrl(), 'POST', $entity->getInputData());
     }
 
     /**
