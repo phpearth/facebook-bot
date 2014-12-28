@@ -40,7 +40,7 @@ class NewPostModule extends ModuleAbstract
     {
         parent::__construct($connectionManager);
 
-        $this->timeCursor = time();
+        $this->timeCursor = 1419745310; //time();
     }
 
     /**
@@ -88,16 +88,18 @@ class NewPostModule extends ModuleAbstract
      */
     protected function handleEntity(Connection $connection, $entity)
     {
-        $gistLink = $this->gistifyMessage($entity);
-        $message = "Hi, {author}. \nPlease keep your post readable by using Gist as your codepad. We have created an example based on your code, so others can read it clearly: {gist_link}.";
+        if (!$this->isHandled($connection, $entity->getId())) {
+            $gistLink = $this->gistifyMessage($entity);
+            $message = "[admin] Hi, {author}. \nPlease keep your post readable by using Gist as your codepad. We have created an example based on your code, so others can read it clearly: {gist_link}.";
 
-        $message = str_replace('{author}', $entity->getAuthor(), $message);
-        $message = str_replace('{gist_link}', $gistLink, $message);
+            $message = str_replace('{author}', $entity->getAuthor(), $message);
+            $message = str_replace('{gist_link}', $gistLink, $message);
 
-        $data = $entity->getCommentInputData();
-        $data['comment_text'] = $message;
+            $data = $entity->getCommentInputData();
+            $data['comment_text'] = $message;
 
-        $connection->request(Connection::REQ_LITE, $entity->getCommentActionUrl(), 'POST', $data);
+            $connection->request(Connection::REQ_LITE, $entity->getCommentActionUrl(), 'POST', $data);
+        }
     }
 
     /**
@@ -111,7 +113,7 @@ class NewPostModule extends ModuleAbstract
     {
         $data = json_encode([
             'public' => true,
-            'description' => 'PHPWorldwide: Auto-generated snippet owned by ' . $entity->getAuthor(),
+            'description' => 'PHPWorldWide: Auto-generated snippet owned by ' . $entity->getAuthor(),
             'files' => [
                 'snippet.php' => [ 
                     'content' => $entity->getMessage() 
@@ -180,6 +182,30 @@ class NewPostModule extends ModuleAbstract
         $dateTime = new \DateTime($timeIso8601);
 
         $this->timeCursor = $dateTime->getTimestamp();
+    }
+
+    /**
+     * Scans the comments for admin comments in the past.
+     */
+    private function isHandled(Connection $connection, $postId) 
+    {
+        $params = [ 
+            'fields' => 'message',
+            'limit' => 500
+        ];
+
+        $path = "/{group_id}_$postId/comments";
+        $response = $connection->request(Connection::REQ_GRAPH, $path, 'GET', $params);
+        $comments = $response->getGraphObjectList();
+
+        foreach ($comments as $comment) {
+            if (strpos($comment->getProperty('message'), '[admin]') === 0) {
+                echo "Already handled: " . $comment->getProperty('message') . "\n";
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
