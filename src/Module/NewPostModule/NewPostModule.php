@@ -40,7 +40,7 @@ class NewPostModule extends ModuleAbstract
     {
         parent::__construct($connectionManager);
 
-        $this->timeCursor = 1419745310; //time();
+        $this->timeCursor = time();
     }
 
     /**
@@ -67,11 +67,7 @@ class NewPostModule extends ModuleAbstract
 
         foreach ($posts as $post) {
             if ($this->containsCode($post->getProperty('message'))) {
-                $entities[] = new NewPostEntity(
-                    $post->getProperty('id'),
-                    $post->getProperty('from')->getProperty('name'),
-                    $post->getProperty('message')
-                );
+                $entities[] = $this->parseEntity($connection, $post);
             }
         }
 
@@ -98,7 +94,10 @@ class NewPostModule extends ModuleAbstract
         $message = str_replace('{author}', $entity->getAuthor(), $message);
         $message = str_replace('{gist_link}', $gistLink, $message);
 
-        echo $message;
+        $data = $entity->getCommentInputData();
+        $data['comment_text'] = $message;
+
+        $connection->request(Connection::REQ_LITE, $entity->getCommentActionUrl(), 'POST', $data);
     }
 
     /**
@@ -129,6 +128,46 @@ class NewPostModule extends ModuleAbstract
         $response = json_decode($request->execute());
 
         return $response->html_url;
+    }
+
+    private function parseEntity(Connection $connection, $post)
+    {
+        list($groupId, $postId) = explode('_', $post->getProperty('id'));
+        $author = $post->getProperty('from')->getProperty('name');
+        $message = $post->getProperty('message');
+
+        $data = [ 
+            'view' => 'permalink',
+            'id' => $postId
+        ];
+        
+        $page = $connection->request(Connection::REQ_LITE, '/groups/{group_id}', 'GET', $data);
+        $dom = new \DOMDocument();
+
+        libxml_use_internal_errors(true);
+        $dom->loadHTML($page);
+        libxml_clear_errors();
+
+        $forms = $dom->getElementsByTagName('form');
+
+        foreach ($forms as $form) {
+            if (strtoupper($form->getAttribute('method')) == 'POST') {
+                $commentActionUrl = $form->getAttribute('action');
+                $inputElements = $form->getElementsByTagName('input');
+
+                $commentInputData = [ 'submit' => 'Post' ];
+
+                foreach ($inputElements as $input) {
+                    if ($input->getAttribute('type') != 'submit') {
+                        $commentInputData[$input->getAttribute('name')] = $input->getAttribute('value');
+                    }
+                }
+
+                return new NewPostEntity($postId, $author, $message, $commentActionUrl, $commentInputData);
+            }
+        }
+
+        return null;
     }
 
     /**

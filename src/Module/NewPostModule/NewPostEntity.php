@@ -34,17 +34,31 @@ class NewPostEntity
     private $message;
 
     /**
+     * The HTTP request URL to issue for commenting.
+     */
+    private $commentActionUrl;
+
+    /**
+     * The HTTP request parameters to issue for commenting.
+     */
+    private $commentInputData;
+
+    /**
      * Creates a new instance.
      *
      * @param int $id The ID of the post.
      * @param string $author The author of the post.
      * @param string $message The message of the post.
+     * @param string $commentActionUrl The HTTP request URL to issue for commenting.
+     * @param string $commentInputData The HTTP request parameters to issue for commenting.
      */
-    public function __construct($id, $author, $message)
+    public function __construct($id, $author, $message, $commentActionUrl, $commentInputData)
     {
         $this->id = $id;
         $this->author = $author;
         $this->message = $message;
+        $this->commentActionUrl = $commentActionUrl;
+        $this->commentInputData = $commentInputData;
     }
 
     /**
@@ -69,5 +83,21 @@ class NewPostEntity
     public function getMessage()
     {
         return $this->message;
+    }
+
+    /**
+     * Gets the HTTP request URL to issue for commenting.
+     */
+    public function getCommentActionURL()
+    {
+        return $this->commentActionUrl;
+    }
+
+    /**
+     * Gets the HTTP request parameters to issue for commenting.
+     */
+    public function getCommentInputData()
+    {
+        return $this->commentInputData;
     }
 }
