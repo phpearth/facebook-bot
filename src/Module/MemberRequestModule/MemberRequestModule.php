@@ -119,7 +119,7 @@ class MemberRequestModule extends ModuleAbstract
      * @return string The fully qualified context-free profile URL.
      */
     private function sanitizeProfileUrl($url) {
-        preg_match("%^(https?\://m\.facebook\.com|)/?([^/]+)\?%", $url, $match);
+        preg_match("%^(https?\://.*\.facebook\.com|)/?(profile.php\?id=[0-9]+|[^/\?]+)%", $url, $match);
 
         $facebookId = $match[2];
 
