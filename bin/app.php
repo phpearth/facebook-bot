@@ -18,7 +18,7 @@ try {
     $appId = $yaml['facebookbot']['app_id'];
     $appSecret = $yaml['facebookbot']['app_secret'];
     $accessToken = $yaml['facebookbot']['access_token'];
-    
+
     $groupId = $yaml['facebookbot']['group_id'];
     $debug = $yaml['facebookbot']['debug'];
 
