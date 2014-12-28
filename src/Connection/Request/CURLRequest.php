@@ -37,6 +37,11 @@ class CURLRequest extends RequestAbstract
     private $headersOnly;
 
     /**
+     * The request headers to set.
+     */
+    private $headers;
+
+    /**
      * Creates a new instance.
      *
      * @param string $baseUrl The base url for the request
@@ -45,14 +50,16 @@ class CURLRequest extends RequestAbstract
      * @param string $cookies The session cookies
      * @param string $data The data to send with the request
      * @param string $headersOnly Whether or not to retrieve only headers (exclusive)
+     * @param string $headers The request headers to set;
      */
-    public function __construct($baseUrl, $path, $method, $cookies = null, $data = [], $headersOnly = false) 
+    public function __construct($baseUrl, $path, $method, $cookies = null, $data = [], $headersOnly = false, $headers = []) 
     {
         parent::__construct($path, $method, $data);
 
         $this->baseUrl = $baseUrl;
         $this->cookies = $cookies;
         $this->headersOnly = $headersOnly;
+        $this->headers = $headers;
     }
 
     /**
@@ -77,10 +84,24 @@ class CURLRequest extends RequestAbstract
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
 
-        if (count($this->getParameters()) > 0) {
-            $dataString = http_build_query($this->getParameters());
+        if (count($this->headers) > 0) {
+            $headers = array_map(
+                function($name, $value) { return "$name: $value"; }, 
+                array_keys($this->headers), 
+                array_values($this->headers)
+            );
+
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        }
+
+        if (is_array($this->getParameters())) {
+            if (count($this->getParameters()) > 0) {
+                $dataString = http_build_query($this->getParameters());
+            } else {
+                $dataString = "";
+            }
         } else {
-            $dataString = "";
+            $dataString = $this->getParameters();
         }
 
         switch ($this->getMethod()) {

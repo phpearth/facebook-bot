@@ -24,6 +24,11 @@ class NewPostEntity
     private $id;
 
     /**
+     * The author of the post.
+     */
+    private $author;
+
+    /**
      * The message of the post.
      */
     private $message;
@@ -32,11 +37,13 @@ class NewPostEntity
      * Creates a new instance.
      *
      * @param int $id The ID of the post.
+     * @param string $author The author of the post.
      * @param string $message The message of the post.
      */
-    public function __construct($id, $message)
+    public function __construct($id, $author, $message)
     {
         $this->id = $id;
+        $this->author = $author;
         $this->message = $message;
     }
 
@@ -46,6 +53,14 @@ class NewPostEntity
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Gets the author of the post.
+     */
+    public function getAuthor()
+    {
+        return $this->author;
     }
 
     /**
