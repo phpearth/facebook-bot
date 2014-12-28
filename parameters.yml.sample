@@ -1,5 +1,6 @@
 facebookbot:
-    email:      email@domain.tld
-    password:   secretpassword
-    group_id:	314159265
-    debug:      false
+    email:          email@domain.tld
+    password:       secretpassword
+    group_id:	    314159265
+    access_token:   CAACEcBAD6wzVT0dSnpZCbIEbxL...
+    debug:          false

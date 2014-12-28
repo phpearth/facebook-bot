@@ -1,15 +1,23 @@
 {
     "name": "wwphp-fb/facebook-bot",
-    "description": "Facebook bot written in PHP",
+    "description": "Facebook group managing bot written in PHP",
     "license": "MIT",
     "keywords": ["facebook-bot"],
     "authors": [
         {
             "name": "Peter Kokot",
-            "email": "peterkokot@gmail.com"
+            "email": "peterkokot@gmail.com",
+            "role": "Lead Developer"
+        },
+        {
+            "name": "Dennis Degryse",
+            "email": "dennisdegryse@gmail.com",
+            "homepage": "http://dennisdegryse.be",
+            "role": "Developer"
         }
     ],
     "require": {
+        "facebook/php-sdk-v4" : "4.0.*",
         "symfony/yaml": "~2.5",
         "monolog/monolog": "~1.11"
     },
