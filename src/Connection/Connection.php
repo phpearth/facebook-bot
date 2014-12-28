@@ -9,7 +9,7 @@
  * @author  Peter Kokot 
  * @author  Dennis Degryse
  * @since   0.0.1
- * @version 0.0.3
+ * @version 0.0.4
  */
 
 namespace PHPWorldWide\FacebookBot\Connection;
@@ -25,6 +25,13 @@ use Monolog\Handler\FirePHPHandler;
  */
 class Connection
 {
+    const REQ_SIMPLE = 1;
+    const REQ_LITE = 2;
+    const REQ_GRAPH = 3;
+
+    const SESSION_CURL = 1;
+    const SESSION_GRAPH = 2;
+
     /**
      * The connection parameters.
      */
@@ -54,14 +61,9 @@ class Connection
      * @param boolean $debug Set debuging on or off
      *
      */
-    public function __construct(ConnectionParameters $connectionParameters, $debug = false)
+    public function __construct(ConnectionParameters $connectionParameters)
     {
         $this->connectionParameters = $connectionParameters;
-        $this->debug = $debug;
-
-        $this->logger = new Logger('curl');
-        $this->logger->pushHandler(new StreamHandler(__DIR__.'/../logs/curl.log', Logger::DEBUG));
-
         $this->state = new DisconnectedConnectionState();
     }
 
@@ -69,18 +71,20 @@ class Connection
      * Sends a HTTP request and returns the resulting HTTP response. This operation requires the
      * state to be connected.
      *
-     * @param string $url The url of the HTTP request.
+     * @param string $type The type of request to perform. This should be one of REQ_SIMPLE, 
+     *                     REQ_LITE or REQ_GRAPH.
+     * @param string $path The path of the request.
      * @param string $method The method of the HTTP request.
      * @param array $data The request parameters to send.
      *
      * @return string The response text.
      * @throws ConnectionException when the request could not be performed.
      */
-    public function request($url, $method, $data = [])
+    public function request($type, $path, $method, $data = [])
     {
-        $url = $this->buildUrl($url);
+        $path = $this->buildPath($path);
         
-        return $this->state->request($this, $url, $method, $data);
+        return $this->state->request($this, $type, $path, $method, $data);
     }
 
     /**
@@ -104,7 +108,10 @@ class Connection
     }
 
     /**
-     * Sets the state of the connection.
+     * Sets the state of the connection. Do *not* use this method unless you know what you're
+     * doing. Read about the State design pattern for more information.
+     *
+     * @todo Make this private and allow friend-access by ConnectionState objects.
      */
     public function setState(ConnectionState $state)
     {
@@ -112,10 +119,10 @@ class Connection
     }
 
     /**
-     * Builds the final url by replacing any connection-related parameters.
+     * Builds the final path by replacing any connection-related parameters.
      */
-    private function buildUrl($url) 
+    private function buildPath($path) 
     {
-        return str_replace('{group_id}', $this->connectionParameters->getGroupId(), $url);
+        return str_replace('{group_id}', $this->connectionParameters->getGroupId(), $path);
     }
 }

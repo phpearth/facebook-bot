@@ -29,6 +29,11 @@ class ConnectionParameters
     private $password;
 
     /**
+     * The Facebook Graph access token.
+     */
+    private $accessToken;
+
+    /**
      * The group's id.
      */
     private $groupId;
@@ -38,12 +43,14 @@ class ConnectionParameters
      *
      * @param string $email The login e-mail
      * @param string $password The login password
+     * @param string $accessToken The Facebook Graph access token
      * @param string $groupId The group's id
      */
-    public function __construct($email, $password, $groupId)
+    public function __construct($email, $password, $accessToken, $groupId)
     {
         $this->email = $email;
         $this->password = $password;
+        $this->accessToken = $accessToken;
         $this->groupId = $groupId;
     }
 
@@ -63,6 +70,16 @@ class ConnectionParameters
      * @return string The login password
      */
     public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * Gets the Facebook Graph access token.
+     *
+     * @return string The access token
+     */
+    public function getAccessToken()
     {
         return $this->password;
     }

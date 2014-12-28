@@ -15,9 +15,10 @@ try {
     $email = $yaml['facebookbot']['email'];
     $password = $yaml['facebookbot']['password'];
     $groupId = $yaml['facebookbot']['group_id'];
+    $accessToken = $yaml['facebookbot']['access_token'];
     $debug = $yaml['facebookbot']['debug'];
 
-    $connectionParameters = new ConnectionParameters($email, $password, $groupId);
+    $connectionParameters = new ConnectionParameters($email, $password, $accessToken, $groupId);
 
     $bot = new Bot($connectionParameters);
     $bot->getModuleManager()->loadModule('MemberRequest');
