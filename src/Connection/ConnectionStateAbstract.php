@@ -9,7 +9,7 @@
  * @author  Peter Kokot 
  * @author  Dennis Degryse
  * @since   0.0.2
- * @version 0.0.2
+ * @version 0.0.3
  */
 
 namespace PHPWorldWide\FacebookBot\Connection;
@@ -23,7 +23,7 @@ abstract class ConnectionStateAbstract implements ConnectionState
 
 	public abstract function request(Connection $connection, $url, $method, $data);
 
-	public abstract function connect(Connection $connection, $email, $password);
+	public abstract function connect(Connection $connection, ConnectionParameters $connectionParameters);
 
 	public abstract function disconnect(Connection $connection);
 

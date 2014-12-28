@@ -9,7 +9,7 @@
  * @author  Peter Kokot 
  * @author  Dennis Degryse
  * @since   0.0.2
- * @version 0.0.2
+ * @version 0.0.3
  */
 
 namespace PHPWorldWide\FacebookBot\Connection;
@@ -26,9 +26,11 @@ class DisconnectedConnectionState extends ConnectionStateAbstract
         throw new ConnectionException("Unable to perform a request when disconnected.", ConnectionException::ERR_NOTCONNECTED);
 	}
 
-	public function connect(Connection $connection, $email, $password)
+	public function connect(Connection $connection, ConnectionParameters $connectionParameters)
 	{
-		$data = [ 'email' => $email, 'pass' => $password ];
+		$data = [ 
+            'email' => $connectionParameters->getEmail(), 
+            'pass' => $connectionParameters->getPassword() ];
 
         $result = parent::doCurlRequest(self::LOGIN_URL, "POST", $data, true);
         preg_match('%Set-Cookie: ([^;]+);%', $result, $cookieData);

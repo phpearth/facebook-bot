@@ -35,10 +35,9 @@ interface ConnectionState
 	 * Connects to Facebook using the stored credentials. Once connected, requests can be sent.
 	 *
 	 * @param Connection $connection The connection on which to perform the operation.
-	 * @param string $email The login email
-	 * @param string $password The login password
+	 * @param string $connectionParameters The connection parameters.
 	 */
-	public function connect(Connection $connection, $email, $password);
+	public function connect(Connection $connection, ConnectionParameters $connectionParameters);
 
     /**
      * Disconnects from Facebook. Once disconnected, requests cannot be send until the connection

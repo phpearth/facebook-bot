@@ -3,8 +3,9 @@
 
 $loader = require_once __DIR__ . '/../vendor/autoload.php';
 
-use PHPWorldWide\FacebookBot\Connection\Connection;
 use PHPWorldWide\FacebookBot\Bot;
+use PHPWorldWide\FacebookBot\Connection\ConnectionParameters;
+
 use Symfony\Component\Yaml\Yaml;
 
 // parse parameters.yml file
@@ -13,13 +14,13 @@ $yaml = Yaml::parse(file_get_contents('./parameters.yml'));
 try {
     $email = $yaml['facebookbot']['email'];
     $password = $yaml['facebookbot']['password'];
-    $group_id = $yaml['facebookbot']['group_id'];
+    $groupId = $yaml['facebookbot']['group_id'];
     $debug = $yaml['facebookbot']['debug'];
 
-    $connection = new Connection($email, $password, $group_id, $debug);
-    $connection->connect();
-    $bot = new Bot($connection);
-    $bot->run();
+    $connectionParameters = new ConnectionParameters($email, $password, $groupId);
+
+    $bot = new Bot($connectionParameters);
+    $bot->getModuleManager()->loadModule('MemberRequest');
 } catch (\Exception $e) {
     // Some error occurred
     echo $e->getMessage();
