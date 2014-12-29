@@ -206,7 +206,6 @@ class NewPostModule extends ModuleAbstract
 
         foreach ($comments as $comment) {
             if (strpos($comment->getProperty('message'), '[admin]') === 0) {
-                echo "Already handled: " . $comment->getProperty('message') . "\n";
                 return true;
             }
         }
