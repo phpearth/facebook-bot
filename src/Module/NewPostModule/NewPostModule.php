@@ -40,7 +40,7 @@ class NewPostModule extends ModuleAbstract
     {
         parent::__construct($connectionManager);
 
-        $this->timeCursor = time();
+        $this->timeCursor = 1419863630;
     }
 
     /**
@@ -90,6 +90,7 @@ class NewPostModule extends ModuleAbstract
     {
         if (!$this->isHandled($connection, $entity->getId())) {
             $gistLink = $this->gistifyMessage($entity);
+            
             $message = "[admin] Hi, {author}. \nPlease keep your post readable by using Gist as your codepad. We have created an example based on your code, so others can read it clearly: {gist_link}.";
 
             $message = str_replace('{author}', $entity->getAuthor(), $message);
@@ -164,8 +165,8 @@ class NewPostModule extends ModuleAbstract
             throw new \Exception("NewPostEntity was not created because the comment form could not be found");
         }
 
-        $commentActionUrl = $form->getAttribute('action');
-        $inputElements = $form->getElementsByTagName('input');
+        $commentActionUrl = $commentForm->getAttribute('action');
+        $inputElements = $commentForm->getElementsByTagName('input');
 
         $commentInputData = [ 'submit' => 'Post' ];
 
@@ -278,6 +279,9 @@ class NewPostModule extends ModuleAbstract
 
             // class, interface
             '%(abstract\s+)?(class|interface)\s+\w+%',
+
+            // use statement
+            '%^use\s+(\S+);%',
         ];
 
         foreach ($patterns as $pattern) {
