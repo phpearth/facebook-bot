@@ -9,33 +9,40 @@
  * @author  Peter Kokot 
  * @author  Dennis Degryse
  * @since   0.0.2
- * @version 0.0.3
+ * @version 0.0.4
  */
 
 namespace PHPWorldWide\FacebookBot\Connection;
+
+use PHPWorldWide\FacebookBot\Connection\Request\CURLRequest;
+use PHPWorldWide\FacebookBot\Connection\Request\FacebookGraphRequest;
 
 /**
  * A connected state. This state allows requests to be performed and sends a (list of) cookie(s) 
  * with them. These cookies were aquired during the connection.
  */
-class ConnectedConnectionState extends ConnectionStateAbstract
+class ConnectedConnectionState implements ConnectionState
 {
-    private $cookies;
+    /**
+     * The list of sessions.
+     */
+    private $sessions;
 
     /**
      * Creates a new instance
      *
-     * @param string $cookies The cookies to issue with requests.
+     * @param array $sessions The list of sessions.
      */
-    public function __construct($cookies)
+    public function __construct($sessions)
     {
-        $this->cookies = $cookies;
+        $this->sessions = $sessions;
     }
 
-    public function request(Connection $connection, $url, $method, $data = [])
+    public function request(Connection $connection, $type, $path, $method, $data = [])
     {
         try {
-            $result = parent::doCurlRequest($url, $method, $data, null, $this->cookies);
+            $request = $this->createRequest($type, $path, $method, $data);
+            $result = $request->execute();
         } catch (\Exception $ex) {
             $connection->setState(new DisconnectedConnectionState());
 
@@ -53,5 +60,45 @@ class ConnectedConnectionState extends ConnectionStateAbstract
     public function disconnect(Connection $connection)
     {
         $connection->setState(new DisconnectedConnectionState());
+    }
+
+    /**
+     * Factory method that creates the correct request corresponding to the given type.
+     *
+     * @param string $type The type of request to perform. This should be one of REQ_SIMPLE, 
+     *                     REQ_LITE or REQ_GRAPH.
+     * @param string $url The url of the HTTP request.
+     * @param string $method The method of the HTTP request.
+     * @param array $data The request parameters to send.
+     *
+     * @return Request The request.
+     */
+    private function createRequest($type, $path, $method, $data = [])
+    {
+        $request = null;
+
+        switch ($type) {
+            case Connection::REQ_GRAPH:
+                $session = $this->sessions[Connection::SESSION_GRAPH];
+                $request = new FacebookGraphRequest($path, $method, $session, $data);
+                break;
+
+            case Connection::REQ_LITE:
+                $baseUrl = 'https://m.facebook.com';
+                $session = $this->sessions[Connection::SESSION_CURL];
+                $request = new CURLRequest($baseUrl, $path, $method, $session, $data);
+                break;
+
+            case Connection::REQ_SIMPLE:
+                $baseUrl = 'https://www.facebook.com';
+                $session = $this->sessions[Connection::SESSION_CURL];
+                $request = new CURLRequest($baseUrl, $path, $method, $session, $data);
+                break;
+
+            default:
+                throw new \Exception("Unsupported request type $type.");
+        }
+
+        return $request;
     }
 }

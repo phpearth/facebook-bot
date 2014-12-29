@@ -9,38 +9,41 @@
  * @author  Peter Kokot 
  * @author  Dennis Degryse
  * @since   0.0.2
- * @version 0.0.3
+ * @version 0.0.4
  */
 
 namespace PHPWorldWide\FacebookBot\Connection;
 
+use PHPWorldWide\FacebookBot\Connection\SessionBuilder\FacebookSessionBuilder;
+use PHPWorldWide\FacebookBot\Connection\SessionBuilder\FacebookGraphSessionBuilder;
+
 /**
  * A disconnected state.
  */
-class DisconnectedConnectionState extends ConnectionStateAbstract
+class DisconnectedConnectionState implements ConnectionState
 {
-	const LOGIN_URL = "https://login.facebook.com/login.php?login_attempt=1";
-
-	public function request(Connection $connection, $url, $method, $data = [])
+	public function request(Connection $connection, $type, $url, $method, $data = [])
 	{
         throw new ConnectionException("Unable to perform a request when disconnected.", ConnectionException::ERR_NOTCONNECTED);
 	}
 
 	public function connect(Connection $connection, ConnectionParameters $connectionParameters)
 	{
-		$data = [ 
-            'email' => $connectionParameters->getEmail(), 
-            'pass' => $connectionParameters->getPassword() ];
+		$sessions = [
+            Connection::SESSION_CURL => new FacebookSessionBuilder(
+                $connectionParameters->getEmail(), 
+                $connectionParameters->getPassword()
+            ),
+            Connection::SESSION_GRAPH => new FacebookGraphSessionBuilder(
+                $connectionParameters->getAppId(), 
+                $connectionParameters->getAppSecret(), 
+                $connectionParameters->getAccessToken()
+            )
+        ];
 
-        $result = parent::doCurlRequest(self::LOGIN_URL, "POST", $data, true);
-        preg_match('%Set-Cookie: ([^;]+);%', $result, $cookieData);
-        $cookies = $cookieData[1];
+        array_walk($sessions, function(&$item) { $item = $item->build(); });
 
-        $result = parent::doCurlRequest(self::LOGIN_URL, "POST", $data, true, $cookies);
-        preg_match_all('%Set-Cookie: ([^;]+);%', $result, $cookieData);
-        $cookies = implode(';', $cookieData[1]);
-
-        $connection->setState(new ConnectedConnectionState($cookies));
+        $connection->setState(new ConnectedConnectionState($sessions));
 	}
 
 	public function disconnect(Connection $connection)

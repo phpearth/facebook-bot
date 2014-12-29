@@ -8,7 +8,7 @@
  *
  * @author  Dennis Degryse
  * @since   0.0.2
- * @version 0.0.2
+ * @version 0.0.4
  */
 
 namespace PHPWorldWide\FacebookBot\Connection;
@@ -23,13 +23,15 @@ interface ConnectionState
 	 * state to be connected.
 	 *
 	 * @param Connection $connection The connection on which to perform the operation.
+     * @param string $type The type of request to perform. This should be one of REQ_SIMPLE, 
+     *                     REQ_LITE or REQ_GRAPH.
 	 * @param string $url The url of the HTTP request.
 	 * @param string $method The method of the HTTP request.
 	 * @param array $data The request parameters to send.
 	 *
 	 * @return string|boolean The response text or false in case something went wrong.
 	 */
-	public function request(Connection $connection, $url, $method, $data);
+	public function request(Connection $connection, $type, $url, $method, $data);
 
 	/**
 	 * Connects to Facebook using the stored credentials. Once connected, requests can be sent.
