@@ -10,8 +10,6 @@ try {
     $config = new ConfigReader('./parameters.yml');
 
     $bot = new Bot($config);
-    $bot->getModuleManager()->loadModule('MemberRequest');
-    $bot->getModuleManager()->loadModule('NewPost');
 } catch (\Exception $e) {
     // Some error occurred
     echo $e->getMessage();

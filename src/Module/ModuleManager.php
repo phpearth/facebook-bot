@@ -8,7 +8,7 @@
  *
  * @author  Dennis Degryse
  * @since   0.0.3
- * @version 0.0.3
+ * @version 0.0.5
  */
 
 namespace PHPWorldWide\FacebookBot\Module;
@@ -49,16 +49,16 @@ class ModuleManager
      * Loads a module.
      *
      * @param string $moduleName The name of the module.
-     * @param array $args The constructor arguments for the module.
+     * @param array $config The module's configuration.
      */
-    public function loadModule($moduleName, $args = [])
+    public function loadModule($moduleName, $config)
     {
         if (array_key_exists($moduleName, $this->modules))
         {
             throw new ModuleException("A module with name '$modulename' was already registered.");
         }
 
-        $module = $this->createModule($moduleName, $args);
+        $module = $this->createModule($moduleName, $config);
         $module->start();
 
         $this->modules[$moduleName] = $module;
@@ -96,21 +96,19 @@ class ModuleManager
      * Creates an instance of a module.
      *
      * @param string $moduleName The name of the module
-     * @param array $args The arguments to supply with the module's constructor
+     * @param array $config The configuration to supply with the module's constructor
      *
      * @return Module The new instance, which is an implementation of the Module interface.
      *
      * @throws ModuleException When the given module could not be loaded or when the representing 
      *                         class does not implement the Module interface.
      */
-    private function createModule($moduleName, $args) 
+    private function createModule($moduleName, $config) 
     {
         $parts = explode(".", $moduleName);
         $className = array_pop($parts) . 'Module';
         $parts += [$className, $className];
         $fqClassName = self::MOD_ROOTNS . '\\' . implode('\\', $parts);
-
-        array_unshift($args, $this->connectionManager);
 
         try {
             $rflxClass = new \ReflectionClass($fqClassName);
@@ -119,7 +117,7 @@ class ModuleManager
                 throw new ModuleException("Module '$moduleName' does not implement the Module interface.");
             }
 
-            $instance = $rflxClass->newInstanceArgs($args);
+            $instance = $rflxClass->newInstance($this->connectionManager, $config);
         } catch (\ReflectionException $ex) {
             throw new ModuleException("A problem occured while loading module '$moduleName': " . $ex->getMessage());
         }

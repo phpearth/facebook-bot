@@ -36,9 +36,9 @@ class NewPostModule extends ModuleAbstract
      *
      * @param ConnectionManager $connectionManager The connectionManager.
      */
-    public function __construct(ConnectionManager $connectionManager) 
+    public function __construct(ConnectionManager $connectionManager, $config) 
     {
-        parent::__construct($connectionManager);
+        parent::__construct($connectionManager, $config);
 
         $this->timeCursor = 1419863630;
     }

@@ -9,7 +9,7 @@
  * @author  Peter Kokot 
  * @author  Dennis Degryse
  * @since   0.0.1
- * @version 0.0.4
+ * @version 0.0.5
  */
 
 namespace PHPWorldWide\FacebookBot\Connection;
@@ -53,7 +53,7 @@ class Connection
      */
     public function __construct(ConnectionParameters $parameters)
     {
-        $this->connectionParameters = $parameters;
+        $this->parameters = $parameters;
         $this->state = new DisconnectedConnectionState();
     }
 

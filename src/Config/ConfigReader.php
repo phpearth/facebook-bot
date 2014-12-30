@@ -66,9 +66,10 @@ class ConfigReader
      *                        its initial structure and a string will return it as the class
      *                        represented by the string.
      *
+     * @throws Exception in case the path doesn't lead to a node.
      * @throws Exception in case something went wrong during the object or instance conversion.
      *
-     * @return The value in the requested structure.
+     * @return mixed The value in the requested structure.
      */
     public function get($path, $asObject = true)
     {
@@ -81,6 +82,22 @@ class ConfigReader
         }
 
         return $node;
+    }
+
+    /**
+     * Gets the keys in the node at the given path.
+     *
+     * @param string $path The path to the node.
+     *
+     * @throws Exception in case the path doesn't lead to a node.
+     *
+     * @return array The keys of the
+     */
+    public function getKeys($path = null) 
+    {
+        $node = self::getNode($path, $this->contentCache);
+
+        return array_keys($node);
     }
 
     /**
@@ -107,7 +124,7 @@ class ConfigReader
 
             foreach ($rflxConstructorParameters as $rflxParameter) {
                 $parameterName = $rflxParameter->getName();
-                
+
                 if (!array_key_exists($parameterName, $node)) {
                     if (!$rflxParameter->isOptional()) {
                         throw new \Exception("Parameter '$parameterName' is required in the constructor of '$class'.");
@@ -128,12 +145,12 @@ class ConfigReader
     }
 
     /**
-     * Converts a node to an object.
+     * Converts a node to an object. Scalar nodes will not be converted.
      *
      * @param mixed $node The node to convert.
      * @param boolean $recursive Whether to convert nested array values.
      *
-     * @return object The object version of the node.
+     * @return mixed The object version of the node or the node itself if it is scalar.
      */
     private static function nodeToObject($node, $recursive = true) 
     {
@@ -213,6 +230,8 @@ class ConfigReader
      * period '.'.
      *
      * @param string $path The path to parse.
+     *
+     * @return array The list of nodes in the path.
      */
     private static function parseNodeList($path) 
     {
@@ -226,6 +245,8 @@ class ConfigReader
      * Parses the contents of a file (which is formatted in the YAML syntax) to an array.
      *
      * @param string $fileName The name of the file where to read from.
+     *
+     * @return array The parsed content.
      */
     private static function parseYamlFile($fileName)
     {
