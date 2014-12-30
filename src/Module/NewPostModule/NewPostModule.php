@@ -91,7 +91,7 @@ class NewPostModule extends ModuleAbstract
         if (!$this->isHandled($connection, $entity->getId())) {
             $gistLink = $this->gistifyMessage($entity);
             
-            $message = "[admin] Hi, {author}. \nPlease keep your post readable by using Gist as your codepad. We have created an example based on your code, so others can read it clearly: {gist_link}.";
+            $message = $this->getConfig()->getGistifyComment();
 
             $message = str_replace('{author}', $entity->getAuthor(), $message);
             $message = str_replace('{gist_link}', $gistLink, $message);
@@ -221,8 +221,9 @@ class NewPostModule extends ModuleAbstract
      * @param int $minimumLines The minimum amount of subsequent lines that should contain code
      *                          before the condition is met.
      */
-    private function containsCode($message, $minimumLines = 3) 
+    private function containsCode($message) 
     {
+        $minimumLines = $this->getConfig()->getGistifyMinimumLines();
         $messageLines = array_map('trim', explode("\n", $message));
         $linesCount = 0;
 
@@ -252,37 +253,7 @@ class NewPostModule extends ModuleAbstract
      */
     private function isCodeLine($line) 
     {
-        $patterns = [
-            // start PHP code
-            '%\<\?(php)?%',
-
-            // variable assignment
-            '%\$\w.*\=.*;%',
-
-            // statement
-            '%(if|for|foreach|while|switch)\s*\(.*\)%',
-
-            // function call
-            '%\w\S*\s*\(.*\)\s*;%',
-
-            // html tag
-            '%\<\w+\>(.*</\w+>)%',
-
-            // class field
-            '%(public|protected|private)\s+(static\s+)?\$\w.*;%',
-
-            // class function
-            '%(public|protected|private)\s+(abstract|static\s+)?function\s*\(%',
-
-            // curly brace
-            '%{|}%',
-
-            // class, interface
-            '%(abstract\s+)?(class|interface)\s+\w+%',
-
-            // use statement
-            '%^use\s+(\S+);%',
-        ];
+        $patterns = $this->getConfig()->getGistifyPatterns();
 
         foreach ($patterns as $pattern) {
             if (preg_match($pattern, $line) === 1) {

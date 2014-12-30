@@ -20,8 +20,31 @@ use PHPWorldWide\FacebookBot\Module\ModuleConfigAbstract;
  */
 class NewPostConfig extends ModuleConfigAbstract
 {
-    public function __construct($autoload) 
+    private $gistifyComment;
+    private $gistifyMinimumLines;
+    private $gistifyPatterns;
+
+    public function __construct($autoload, $gistifyComment, $gistifyMinimumLines, $gistifyPatterns) 
     {
         parent::__construct($autoload);
+
+        $this->gistifyComment = $gistifyComment;
+        $this->gistifyMinimumLines = $gistifyMinimumLines;
+        $this->gistifyPatterns = $gistifyPatterns;
+    }
+
+    public function getGistifyComment()
+    {
+        return $this->gistifyComment;
+    }
+
+    public function getGistifyMinimumLines()
+    {
+        return $this->gistifyMinimumLines;
+    }
+
+    public function getGistifyPatterns()
+    {
+        return $this->gistifyPatterns;
     }
 }

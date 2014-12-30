@@ -1,19 +1,32 @@
 # General
 facebookbot:
-    debug:          false
+    debug:              false
 
 connection:
-    group_id:       314159265
-    email:          email@domain.tld
-    password:       secretpassword
-    app_id:         123456789
-    app_secret:     d5EhCCp3V021UWoN49Qcvv7gFvh...
-    access_token:   CAACEcBAD6wzVT0dSnpZCbIEbxL... # optional
+    group_id:           314159265
+    email:              email@domain.tld
+    password:           secretpassword
+    app_id:             123456789
+    app_secret:         d5EhCCp3V021UWoN49Qcvv7gFvh...
+    access_token:       CAACEcBAD6wzVT0dSnpZCbIEbxL... # optional
 
 # Member Request Module
 mod-memberrequest:
-    autoload:      true
+    autoload:           true
 
 # New Post Module
 mod-newpost:
-    autoload:      true
+    autoload:               true
+    gistify_comment:        '[admin] Hi, {author}. \nPlease keep your post readable by using Gist as your codepad. We have created an example based on your code, so others can read it clearly: {gist_link}.'
+    gistify_patterns:
+        - '%\<\?(php)?%' # start PHP code
+        - '%\$\w.*\=.*;%' # variable assignment
+        - '%(if|for|foreach|while|switch)\s*\(.*\)%' # statement
+        - '%\w\S*\s*\(.*\)\s*;%' # function call
+        - '%\<\w+\>(.*</\w+>)%' # html tag
+        - '%(public|protected|private)\s+(static\s+)?\$\w.*;%' # class field
+        - '%(public|protected|private)\s+(abstract|static\s+)?function\s*\(%' # class method
+        - '%{|}%' # curly brace
+        - '%(abstract\s+)?(class|interface)\s+\w+%' # class, interface
+        - '%^use\s+(\S+);%' # use statement
+    gistify_minimum_lines:  3
