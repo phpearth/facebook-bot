@@ -17,11 +17,14 @@ mod-memberrequest:
 # New Post Module
 mod-newpost:
     autoload:               true
-    gistify_comment:        '[admin] Hi, {author}. \nPlease keep your post readable by using Gist as your codepad. We have created an example based on your code, so others can read it clearly: {gist_link}.'
+    gistify_comment:        |
+        [admin] Hi, {author}.
+        Please keep your post readable by using Gist as your codepad. We have created an example based on your code, so others can read it clearly: {gist_link}.
     gistify_patterns:
         - '%\<\?(php)?%' # start PHP code
         - '%\$\w.*\=.*;%' # variable assignment
         - '%(if|for|foreach|while|switch)\s*\(.*\)%' # statement
+        - '%^return(\s+.*)?;%' # return statement
         - '%\w\S*\s*\(.*\)\s*;%' # function call
         - '%\<\w+\>(.*</\w+>)%' # html tag
         - '%(public|protected|private)\s+(static\s+)?\$\w.*;%' # class field
