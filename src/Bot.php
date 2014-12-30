@@ -14,8 +14,9 @@
 
 namespace PHPWorldWide\FacebookBot;
 
+use PHPWorldWide\FacebookBot\Config\ConfigReader;
+
 use PHPWorldWide\FacebookBot\Connection\ConnectionManager;
-use PHPWorldWide\FacebookBot\Connection\ConnectionParameters;
 
 use PHPWorldWide\FacebookBot\Module\ModuleManager;
 
@@ -39,10 +40,12 @@ class Bot
      *
      * @param ConnectionParameters $connectionParameters
      */
-    public function __construct(ConnectionParameters $connectionParameters)
+    public function __construct(ConfigReader $config)
     {
+        $connectionParameters = $config->get('connection', 'PHPWorldWide\FacebookBot\Connection\ConnectionParameters');
+
         $this->connectionManager = new ConnectionManager($connectionParameters);
-        $this->moduleManager = new ModuleManager($this->connectionManager);
+        $this->moduleManager = new ModuleManager($this->connectionManager, $config);
     }
 
     /**
