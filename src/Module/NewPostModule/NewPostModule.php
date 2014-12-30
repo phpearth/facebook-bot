@@ -40,7 +40,7 @@ class NewPostModule extends ModuleAbstract
     {
         parent::__construct($connectionManager, $config);
 
-        $this->timeCursor = 1419863630;
+        $this->timeCursor = time();
     }
 
     /**
