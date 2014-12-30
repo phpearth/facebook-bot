@@ -8,7 +8,7 @@
  *
  * @author  Dennis Degryse
  * @since   0.0.4
- * @version 0.0.4
+ * @version 0.0.5
  */
 
 namespace PHPWorldWide\FacebookBot\Module\NewPostModule;
