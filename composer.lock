@@ -4,20 +4,20 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "605485e45fd83da52734080c571be8b4",
+    "hash": "0881ea388142b65c3d7d6dc8cedcd63d",
     "packages": [
         {
             "name": "facebook/php-sdk-v4",
-            "version": "4.0.13",
+            "version": "4.0.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/facebook/facebook-php-sdk-v4.git",
-                "reference": "ba732909485ae25484584a11202927ef2c70acd3"
+                "reference": "566c4ea8df82ba8bdd18abf5c0b66c23fe79b3e9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facebook/facebook-php-sdk-v4/zipball/ba732909485ae25484584a11202927ef2c70acd3",
-                "reference": "ba732909485ae25484584a11202927ef2c70acd3",
+                "url": "https://api.github.com/repos/facebook/facebook-php-sdk-v4/zipball/566c4ea8df82ba8bdd18abf5c0b66c23fe79b3e9",
+                "reference": "566c4ea8df82ba8bdd18abf5c0b66c23fe79b3e9",
                 "shasum": ""
             },
             "require": {
@@ -53,7 +53,7 @@
                 "facebook",
                 "sdk"
             ],
-            "time": "2014-12-12 19:49:23"
+            "time": "2014-12-29 22:43:17"
         },
         {
             "name": "monolog/monolog",
@@ -61,12 +61,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "5bee6fe56c2e8d1fc22b5188d49b6a2500df065f"
+                "reference": "17f651bb96692b084b3e0361d45aeb75e0a25ac0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/5bee6fe56c2e8d1fc22b5188d49b6a2500df065f",
-                "reference": "5bee6fe56c2e8d1fc22b5188d49b6a2500df065f",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/17f651bb96692b084b3e0361d45aeb75e0a25ac0",
+                "reference": "17f651bb96692b084b3e0361d45aeb75e0a25ac0",
                 "shasum": ""
             },
             "require": {
@@ -80,7 +80,7 @@
                 "aws/aws-sdk-php": "~2.4, >2.4.8",
                 "doctrine/couchdb": "~1.0@dev",
                 "graylog2/gelf-php": "~1.0",
-                "phpunit/phpunit": "~3.7.0",
+                "phpunit/phpunit": "~4.0",
                 "raven/raven": "~0.5",
                 "ruflin/elastica": "0.90.*",
                 "videlalvaro/php-amqplib": "~2.4"
@@ -99,7 +99,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.11.x-dev"
+                    "dev-master": "1.12.x-dev"
                 }
             },
             "autoload": {
@@ -125,7 +125,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2014-12-17 10:47:08"
+            "time": "2014-12-30 10:39:23"
         },
         {
             "name": "psr/log",
@@ -177,12 +177,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "4acdf4ff8dedd856ee5fd1e4e0e16f7f42dca463"
+                "reference": "7918f04ec3f38d2069b91b2d2e0e3a10d9cfc6c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/4acdf4ff8dedd856ee5fd1e4e0e16f7f42dca463",
-                "reference": "4acdf4ff8dedd856ee5fd1e4e0e16f7f42dca463",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/7918f04ec3f38d2069b91b2d2e0e3a10d9cfc6c4",
+                "reference": "7918f04ec3f38d2069b91b2d2e0e3a10d9cfc6c4",
                 "shasum": ""
             },
             "require": {
@@ -215,7 +215,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2014-12-22 16:45:18"
+            "time": "2014-12-30 09:05:46"
         }
     ],
     "packages-dev": [
@@ -634,12 +634,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "2a1f8746a5bc0ff5d0cd24b356123fcf0fd1fb64"
+                "reference": "e7aadb2f324eaa172982fbaeba6109e41e3631a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/2a1f8746a5bc0ff5d0cd24b356123fcf0fd1fb64",
-                "reference": "2a1f8746a5bc0ff5d0cd24b356123fcf0fd1fb64",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/e7aadb2f324eaa172982fbaeba6109e41e3631a3",
+                "reference": "e7aadb2f324eaa172982fbaeba6109e41e3631a3",
                 "shasum": ""
             },
             "require": {
@@ -698,7 +698,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-12-22 16:18:11"
+            "time": "2014-12-29 11:07:54"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -1077,7 +1077,9 @@
     "minimum-stability": "dev",
     "stability-flags": [],
     "prefer-stable": false,
-    "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": ">=5.4.0",
+        "ext-pthreads": "*"
+    },
     "platform-dev": []
 }
