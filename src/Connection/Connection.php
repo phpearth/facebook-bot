@@ -9,7 +9,7 @@
  * @author  Peter Kokot 
  * @author  Dennis Degryse
  * @since   0.0.1
- * @version 0.0.4
+ * @version 0.0.5
  */
 
 namespace PHPWorldWide\FacebookBot\Connection;
@@ -35,22 +35,12 @@ class Connection
     /**
      * The connection parameters.
      */
-    private $connectionParameters;
-
-    /**
-     * Whether to enable debugging.
-     */
-    private $debug;
+    private $parameters;
 
     /**
      * The current connection state
      */
     private $state;
-
-    /**
-     * A logger for debugging perposes
-     */
-    private $logger;
 
     /**
      * Constructor
@@ -61,9 +51,9 @@ class Connection
      * @param boolean $debug Set debuging on or off
      *
      */
-    public function __construct(ConnectionParameters $connectionParameters)
+    public function __construct(ConnectionParameters $parameters)
     {
-        $this->connectionParameters = $connectionParameters;
+        $this->parameters = $parameters;
         $this->state = new DisconnectedConnectionState();
     }
 
@@ -95,7 +85,7 @@ class Connection
      */
     public function connect()
     {
-        $this->state->connect($this, $this->connectionParameters);
+        $this->state->connect($this, $this->parameters);
     }
 
     /**
@@ -123,6 +113,6 @@ class Connection
      */
     private function buildPath($path) 
     {
-        return str_replace('{group_id}', $this->connectionParameters->getGroupId(), $path);
+        return str_replace('{group_id}', $this->parameters->getGroupId(), $path);
     }
 }

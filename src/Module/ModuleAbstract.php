@@ -8,7 +8,7 @@
  *
  * @author  Dennis Degryse
  * @since   0.0.3
- * @version 0.0.3
+ * @version 0.0.5
  */
 
 namespace PHPWorldWide\FacebookBot\Module;
@@ -23,16 +23,19 @@ abstract class ModuleAbstract extends \Thread implements Module
 {
     private $connectionManager;
     private $stopRequested;
+    private $config;
 
     /**
      * Creates a new instance.
      *
      * @param ConnectionManager $connectionManager The connection manager that can be used for
      *                                             creating new connections.
+     * @param array $params The module parameters.
      */
-    public function __construct(ConnectionManager $connectionManager) 
+    public function __construct(ConnectionManager $connectionManager, $config) 
     {
         $this->connectionManager = $connectionManager;
+        $this->config = $config;
     }
 
     /**
@@ -55,6 +58,14 @@ abstract class ModuleAbstract extends \Thread implements Module
         $this->unlock();
 
         $this->join();
+    }
+
+    /**
+     * Gets the module's configuration.
+     */
+    protected function getConfig() 
+    {
+        return $this->config;
     }
 
     /**
