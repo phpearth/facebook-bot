@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author  Peter Kokot 
+ * @author  Peter Kokot
  * @author  Dennis Degryse
  * @since   0.0.2
  * @version 0.0.4
@@ -107,7 +107,7 @@ class MemberRequestModule extends ModuleAbstract
         preg_match("%^(https?\://.*\.facebook\.com|)(/.*)$%", $url, $match);
 
         $path = $match[2];
-        
+
         return $path;
     }
 
@@ -119,9 +119,11 @@ class MemberRequestModule extends ModuleAbstract
      * @return string The fully qualified context-free profile URL.
      */
     private function sanitizeProfileUrl($url) {
-        preg_match("%^(https?\://.*\.facebook\.com|)/?(profile.php\?id=[0-9]+|[^/\?]+)%", $url, $match);
-
-        $facebookId = $match[2];
+        if(preg_match("%^(https?\://.*\.facebook\.com|)/?(profile.php\?id=[0-9]+|[^/\?]+)%", $url, $match)) {
+            $facebookId = $match[2];
+        } else {
+            $facebookId = 0;
+        }
 
         return "https://www.facebook.com/$facebookId";
     }
